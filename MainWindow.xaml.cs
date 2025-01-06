@@ -15,7 +15,6 @@ namespace EasyWordWPF_US5
         private int currentWordIndex = -1;
         private bool isGermanToEnglish = true; // Default mode is D->E
 
-        // Liste zur Überprüfung, ob mehrere CSV vorhanden sind
         private List<string> currentCsvData = new List<string>();
 
         public MainWindow()
@@ -97,7 +96,7 @@ namespace EasyWordWPF_US5
         {
             if (!wordList.Any())
             {
-                MessageBox.Show("Bitte importieren Sie zuerst eine Wörterliste.", "Keine Wörter vorhanden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Bitte importieren Sie eine Wörterliste.", "Keine Wörter vorhanden", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -125,7 +124,7 @@ namespace EasyWordWPF_US5
                 }
 
                 bool isCorrect = isGermanToEnglish
-                    ? input.Trim().Equals(currentWord.Item2, StringComparison.OrdinalIgnoreCase)
+                    ? input.Trim().Equals(currentWord.Item2, StringComparison.OrdinalIgnoreCase) 
                     : input.Trim().Equals(currentWord.Item1, StringComparison.OrdinalIgnoreCase);
 
                 if (isCorrect)
