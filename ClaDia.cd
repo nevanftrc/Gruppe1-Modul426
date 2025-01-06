@@ -3,39 +3,39 @@
   <Class Name="EasyWordWPF.Buckets">
     <Position X="5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAgBAAAIAAAAAAAAAAABCAAAAAAAAFA=</HashCode>
-      <FileName>Buckets.cs</FileName>
+      <HashCode>AAAAAAAAACAQAAABIAAIAAAAAAAAAAAAAAAEAAAAAEA=</HashCode>
+      <FileName>Models\Buckets.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EasyWordWPF.CSVlist">
-    <Position X="0.5" Y="0.75" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAAABEAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
-      <FileName>csv_reader.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EasyWordWPF.WordLearner">
-    <Position X="0.5" Y="4" Width="3.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAACAAAA=</HashCode>
-      <FileName>MainWindow.xaml.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="EasyWordWPF.wordlearn">
+  <Class Name="EasyWordWPF.Wordlearner">
     <Position X="5" Y="3.75" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAIAAAAAAAAAAAAAwQAAAAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAQAAIAAAAAAAAAAgAAwQAAAAAAAQAAAAAAAA=</HashCode>
       <FileName>wordlearn.xaml.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="EasyWordWPF.App" Collapsed="true">
-    <Position X="8.5" Y="1" Width="1.5" />
+  <Class Name="EasyWordWPF_US5.Models.CSVlist">
+    <Position X="8.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>App.xaml.cs</FileName>
+      <HashCode>AAAAAAIAAAAAAACABEAAAAAAAAAAAAAAAAAABAAgAAA=</HashCode>
+      <FileName>Models\csv_reader.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="EasyWordWPF.Model.IncorrectList">
+    <Position X="11" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAggQAAAAAAAAEAAAAAABQAAA=</HashCode>
+      <FileName>Models\IncorrectList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EasyWordWPF_US5.MainWindow">
+    <Position X="9" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICAAkAAAAAAAAEAABSAAAAAABoAAAAAAAgQAAgCARAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
