@@ -1,4 +1,6 @@
-﻿        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+﻿<Window x:Class="EasyWordWPF_US5.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="EasyWord - Wortquiz" Height="350" Width="400" WindowStartupLocation="CenterScreen">
     <Grid>
         <!-- Hauptbereich mit Buttons -->
