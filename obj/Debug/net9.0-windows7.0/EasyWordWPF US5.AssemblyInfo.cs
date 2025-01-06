@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EasyWordWPF US5")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6129e9b50a878882bf303e6ddf0acd6d39a663d3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a46e4680772e4b575fb5f86dc800ed6e8b14d84")]
 [assembly: System.Reflection.AssemblyProductAttribute("EasyWordWPF US5")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EasyWordWPF US5")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
