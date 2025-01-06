@@ -4,14 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using EasyWordWPF;
 using Microsoft.Win32;
 
 namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
     {
-
+        private Buckets myBucket;
         // Eigenschaften für die Software-Informationen
+   
         public string DeveloperName { get; set; } = "Gruppe1";
         public string Version { get; set; } = "1.0.0";
         // BuildDate dynamisch setzen
@@ -175,6 +177,36 @@ namespace EasyWordWPF_US5
         private void Close(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+        private void UpdateBucketCountLabel()
+        {
+            numtxtbo.Content = myBucket.bucket_count.ToString();
+        }
+        private void bucketAdd(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                myBucket.bucket_add(1); // Add one bucket
+                UpdateBucketCountLabel();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Event handler for removing a bucket
+        private void bucketRem(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                myBucket.bucket_remove(1); // Remove one bucket
+                UpdateBucketCountLabel();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
