@@ -15,6 +15,9 @@ namespace EasyWordWPF_US5
         private int currentWordIndex = -1;
         private bool isGermanToEnglish = true; // Default mode is D->E
 
+        // Liste zur Überprüfung, ob es mehrere CSV gibt
+        private List<string> currentCsvData = new List<string>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,32 +27,64 @@ namespace EasyWordWPF_US5
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*"
+                Filter = "CSV files (*.csv)|*.csv",
+                Title = "Select a CSV file"
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
                 try
                 {
-                    var lines = File.ReadAllLines(openFileDialog.FileName);
+                    var newCsvData = File.ReadAllLines(openFileDialog.FileName).ToList();
                     List<(string, string)> tempList = new List<(string, string)>();
 
-                    foreach (var line in lines)
+                    foreach (var line in newCsvData)
                     {
-                        if (string.IsNullOrWhiteSpace(line)) continue; // Ignore empty lines
+                        if (string.IsNullOrWhiteSpace(line)) continue;
 
                         var parts = line.Split(';');
                         if (parts.Length != 2)
                         {
                             MessageBox.Show($"Fehlerhafte Zeile: {line}", "Importfehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                            continue; // Skip invalid lines
+                            continue;
                         }
                         tempList.Add((parts[0].Trim(), parts[1].Trim()));
                     }
 
-                    wordList = tempList;
-                    incorrectWords.Clear();
-                    MessageBox.Show("Wörterliste erfolgreich importiert!", "Import abgeschlossen", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (currentCsvData.Any())
+                    {
+                        var result = MessageBox.Show(
+                            "Es existiert bereits ein CSV-Datensatz. Möchten Sie die neue Datei hinzufügen oder die bestehende ersetzen?",
+                            "CSV-Import",
+                            MessageBoxButton.YesNoCancel,
+                            MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            currentCsvData = newCsvData;
+                            wordList = tempList;
+                            incorrectWords.Clear();
+                            MessageBox.Show("Die alte CSV-Datei wurde ersetzt.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else if (result == MessageBoxResult.No)
+                        {
+                            currentCsvData.AddRange(newCsvData);
+                            wordList.AddRange(tempList);
+                            MessageBox.Show("Die CSV-Dateien wurden kombiniert.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Der Import wurde abgebrochen.", "Abbruch", MessageBoxButton.OK, MessageBoxImage.Information);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        currentCsvData = newCsvData;
+                        wordList = tempList;
+                        incorrectWords.Clear();
+                        MessageBox.Show("Die CSV-Datei wurde erfolgreich geladen.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
                 catch (Exception ex)
                 {

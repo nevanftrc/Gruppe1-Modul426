@@ -1,18 +1,18 @@
 ﻿EasyWordWPF US5
-1.0.0.0
+
 
 winexe
 C#
 .cs
-C:\Users\GerätvonDavid\Documents\Ipso\ICT-Module\Modul 426\Projektarbeit\obj\Debug\net9.0-windows7.0\
+C:\Users\GerätvonDavid\Documents\Ipso\ICT-Module\Modul 426\Projektarbeit\obj\Release\net9.0-windows7.0\
 EasyWordWPF_US5
 none
 false
-TRACE;DEBUG;NET;NET9_0;NETCOREAPP
+TRACE;RELEASE;NET;NET9_0;NETCOREAPP
 C:\Users\GerätvonDavid\Documents\Ipso\ICT-Module\Modul 426\Projektarbeit\App.xaml
 11407045341
 
-6-1201488146
+41291450248
 201668129756
 MainWindow.xaml;
 

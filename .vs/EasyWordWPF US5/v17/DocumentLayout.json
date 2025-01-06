@@ -1,9 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Nevan Alberola\\source\\repos\\Gruppe1-Modul426\\",
+  "WorkspaceRootPath": "C:\\Users\\Ger\u00E4tvonDavid\\Documents\\Ipso\\ICT-Module\\Modul 426\\Projektarbeit\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E6CA1DE7-DB3C-438A-8C49-B3BA10AAD3D3}|EasyWordWPF US5.csproj|c:\\users\\nevan alberola\\source\\repos\\gruppe1-modul426\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E6CA1DE7-DB3C-438A-8C49-B3BA10AAD3D3}|EasyWordWPF US5.csproj|c:\\users\\ger\u00E4tvondavid\\documents\\ipso\\ict-module\\modul 426\\projektarbeit\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{E6CA1DE7-DB3C-438A-8C49-B3BA10AAD3D3}|EasyWordWPF US5.csproj|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E6CA1DE7-DB3C-438A-8C49-B3BA10AAD3D3}|EasyWordWPF US5.csproj|c:\\users\\ger\u00E4tvondavid\\documents\\ipso\\ict-module\\modul 426\\projektarbeit\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6CA1DE7-DB3C-438A-8C49-B3BA10AAD3D3}|EasyWordWPF US5.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -27,12 +31,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\Ger\u00E4tvonDavid\\Documents\\Ipso\\ICT-Module\\Modul 426\\Projektarbeit\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\Ger\u00E4tvonDavid\\Documents\\Ipso\\ICT-Module\\Modul 426\\Projektarbeit\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-01-06T12:24:21.625Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Nevan Alberola\\source\\repos\\Gruppe1-Modul426\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Ger\u00E4tvonDavid\\Documents\\Ipso\\ICT-Module\\Modul 426\\Projektarbeit\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Nevan Alberola\\source\\repos\\Gruppe1-Modul426\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\Ger\u00E4tvonDavid\\Documents\\Ipso\\ICT-Module\\Modul 426\\Projektarbeit\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAABBAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-06T12:15:20.017Z",
               "EditorCaption": ""
