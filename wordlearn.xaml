@@ -1,0 +1,20 @@
+﻿<Window x:Class="EasyWordWPF.Wordlearner"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EasyWordWPF"
+        mc:Ignorable="d"
+        Title="Learn" Height="239" Width="307">
+    <Grid>
+        <Label Content="Englishes wort:" Margin="10,10,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89"/>
+        <Label Content="Deutsches wort:" HorizontalAlignment="Left" Margin="10,63,0,0" Height="26" VerticalAlignment="Top"/>
+        <TextBox x:Name="de_input" Margin="10,94,14,0" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
+        <Button x:Name="checkerbtn" Content="Kontrolle" Margin="195,0,14,10" Click="check" Height="38" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="en_input" HorizontalAlignment="Left" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" Height="18" Visibility="Hidden"/>
+        <Label x:Name="english" Content="Label" Margin="10,32,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="155"/>
+        <Label x:Name="deutsch" Content="Label" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Label x:Name="result" Content="Test" Margin="10,121,30,0" Height="26" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
