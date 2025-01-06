@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -9,6 +10,14 @@ namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
     {
+
+        // Eigenschaften für die Software-Informationen
+        public string DeveloperName { get; set; } = "Gruppe1";
+        public string Version { get; set; } = "1.0.0";
+        // BuildDate dynamisch setzen
+        public string BuildDate { get; set; } = DateTime.Now.ToString("dd.MM.yyyy");
+        
+
         private List<(string German, string English)> wordList = new List<(string, string)>();
         private List<(string, string)> incorrectWords = new List<(string, string)>();
         private Random random = new Random();
@@ -20,7 +29,9 @@ namespace EasyWordWPF_US5
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this; // Setze den DataContext auf die aktuelle Instanz der MainWindow-Klasse
         }
+
 
         private void ImportCsvButton_Click(object sender, RoutedEventArgs e)
         {
