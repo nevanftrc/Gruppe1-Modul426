@@ -18,7 +18,7 @@
                 <TextBlock Text="{Binding DeveloperName}" Margin="0,5,0,0"/>
                 <TextBlock Text="{Binding Version}" Margin="0,5,0,0"/>
                 <TextBlock Text="{Binding BuildDate}" Margin="0,5,0,0"/>
-                <TextBlock Text="Bei Problemen wenden Sie sich an Hotline EasyWord" Margin="0,5,0,0"/>
+                <TextBlock Text="Falls ein Problem auftreten sollte, wenden sie sich bitte an EasyWord." Margin="0,5,0,0"/>
             </StackPanel>
         </StackPanel>
 
