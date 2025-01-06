@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyWordWPF_US5.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EasyWordWPF

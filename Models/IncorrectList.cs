@@ -1,4 +1,6 @@
-﻿namespace EasyWordWPF.Model
+﻿using EasyWordWPF_US5.Models;
+
+namespace EasyWordWPF.Model
 {
     public class IncorrectList
     {
