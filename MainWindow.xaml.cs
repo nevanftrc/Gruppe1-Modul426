@@ -15,6 +15,7 @@ namespace EasyWordWPF_US5
         private int currentWordIndex = -1;
         private bool isGermanToEnglish = true; // Default mode is D->E
 
+        //oijdojoijoij
         public MainWindow()
         {
             InitializeComponent();
