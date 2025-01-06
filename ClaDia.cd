@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EasyWordWPF.Buckets">
+    <Position X="5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgBAAAIAAAAAAAAAAABCAAAAAAAAFA=</HashCode>
+      <FileName>Buckets.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EasyWordWPF.CSVlist">
+    <Position X="0.5" Y="0.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAABEAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>csv_reader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EasyWordWPF.WordLearner">
+    <Position X="0.5" Y="4" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EasyWordWPF.wordlearn">
+    <Position X="5" Y="3.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAIAAAAAAAAAAAAAwQAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>wordlearn.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EasyWordWPF.App" Collapsed="true">
+    <Position X="8.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
