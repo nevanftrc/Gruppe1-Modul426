@@ -13,7 +13,7 @@ namespace EasyWordWPF_US5
         private List<(string, string)> incorrectWords = new List<(string, string)>();
         private Random random = new Random();
         private int currentWordIndex = -1;
-        private bool isGermanToEnglish = true; // Default mode is D->E
+        private bool isGermanToEnglish = true; // Default mode is D->E Test
 
         //test
         public MainWindow()
