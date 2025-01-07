@@ -16,16 +16,33 @@ namespace EasyWordWPF_US5
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
-    /// </summary>
     public partial class SettingsWindow : Window
     {
-        public SettingsWindow()
+        private MainWindow mainWindow;
+
+        public SettingsWindow(MainWindow mainWindowInstance)
         {
             InitializeComponent();
+            mainWindow = mainWindowInstance;
+
+            // Setze den aktuellen Zustand der Checkbox basierend auf dem Status im MainWindow
+            CheckGrammar.IsChecked = !mainWindow.isCaseSensitive; // Wenn isCaseSensitive true, wird die Checkbox deaktiviert (beachtet Groß/Kleinschreibung)
         }
-        private void Close(object sender, RoutedEventArgs e)
+
+        // Event-Handler für den Apply-Button
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-           this.Close();
+            // Ändere den Zustand von Groß-/Kleinschreibung basierend auf dem Wert der Checkbox
+            mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
+
+            MessageBox.Show("Einstellungen angewendet!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        // Event-Handler für den Close-Button
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
+
 }

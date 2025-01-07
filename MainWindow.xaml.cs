@@ -14,6 +14,25 @@ namespace EasyWordWPF_US5
     public partial class MainWindow : Window
     {
 
+        public bool isCaseSensitive { get; set; } = true; // Standardmäßig Groß-/Kleinschreibung beachten
+
+
+        // Vergleichsmethode, die isCaseSensitive berücksichtigt
+        private bool CompareAnswer(string input, string correctAnswer)
+        {
+            return isCaseSensitive
+                ? input.Trim().Equals(correctAnswer)  // Beachtet die Groß-/Kleinschreibung
+                : input.Trim().Equals(correctAnswer, StringComparison.OrdinalIgnoreCase);  // Ignoriert die Groß-/Kleinschreibung
+        }
+
+
+
+
+
+
+
+
+
         private void OpenFileDialog_Click(object sender, RoutedEventArgs e)
         {
             // Erstelle ein OpenFileDialog-Objekt
@@ -224,9 +243,6 @@ namespace EasyWordWPF_US5
                 currentWordIndex = random.Next(wordList.Count);
                 var currentWord = wordList[currentWordIndex];
 
-                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
-                MessageBox.Show($"Statistik:\\nKorrekt: {stats.CorrectCount}\\nFalsch: {stats.IncorrectCount}", "Wortstatistik", MessageBoxButton.OK);
-
                 string question = isGermanToEnglish
                     ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?"
                     : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?";
@@ -240,38 +256,23 @@ namespace EasyWordWPF_US5
                 }
 
                 bool isCorrect = isGermanToEnglish
-                    ? input.Trim().Equals(currentWord.Item2, StringComparison.OrdinalIgnoreCase) 
-                    : input.Trim().Equals(currentWord.Item1, StringComparison.OrdinalIgnoreCase);
+                    ? (isCaseSensitive ? input.Trim().Equals(currentWord.Item2) : input.Trim().Equals(currentWord.Item2, StringComparison.OrdinalIgnoreCase))
+                    : (isCaseSensitive ? input.Trim().Equals(currentWord.Item1) : input.Trim().Equals(currentWord.Item1, StringComparison.OrdinalIgnoreCase));
 
                 if (isCorrect)
                 {
-                    stats.CorrectCount++; 
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
                     wordList.RemoveAt(currentWordIndex);
                 }
                 else
                 {
-                    stats.IncorrectCount++; 
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
-                    incorrectWords.Add(currentWord); 
+                    incorrectWords.Add(currentWord);
                 }
-
-                statisticsService.SaveStatistics(); 
-            }
-
-            if (incorrectWords.Any())
-            {
-                wordList = new List<(string, string)>(incorrectWords);
-                incorrectWords.Clear();
-                MessageBox.Show("Ein neuer Durchlauf mit falsch beantworteten Wörtern beginnt.", "Nächster Durchlauf", MessageBoxButton.OK, MessageBoxImage.Information);
-                StartQuizLoop();
-            }
-            else
-            {
-                MessageBox.Show("Alle Wörter wurden erfolgreich beantwortet!", "Quiz abgeschlossen", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
 
         private void ResetStatisticsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -361,9 +362,10 @@ namespace EasyWordWPF_US5
 
         private void OpenSettings(object sender, RoutedEventArgs e)
         {
-            SettingsWindow settingsWindow = new SettingsWindow();
+            SettingsWindow settingsWindow = new SettingsWindow(this);  // Übergibt die Instanz von MainWindow
             settingsWindow.Show();
         }
+
         private void OpenInfo_Click(object sender, RoutedEventArgs e)
         {
             InfoDialog infoDialog = new InfoDialog();
