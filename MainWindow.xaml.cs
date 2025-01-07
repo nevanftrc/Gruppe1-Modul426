@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using EasyWordWPF;
+using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
 
 namespace EasyWordWPF_US5
@@ -13,14 +14,19 @@ namespace EasyWordWPF_US5
     {
         private Buckets myBucket;
         // Eigenschaften für die Software-Informationen
+
    
         public string DeveloperName { get; set; } = "Gruppe1";
+
+
+
+        
         public string Version { get; set; } = "1.0.0";
         // BuildDate dynamisch setzen
         public string BuildDate { get; set; } = DateTime.Now.ToString("dd.MM.yyyy");
-        
 
-        private List<(string German, string English)> wordList = new List<(string, string)>();
+
+        private List<(string German, string English)> wordList = new List<(string German, string English)>();
         private List<(string, string)> incorrectWords = new List<(string, string)>();
         private Random random = new Random();
         private int currentWordIndex = -1;
@@ -30,8 +36,46 @@ namespace EasyWordWPF_US5
 
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
             DataContext = this; // Setze den DataContext auf die aktuelle Instanz der MainWindow-Klasse
+
+            InitializeComponent();
+            myBucket = new Buckets();
+        }
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadUserData();
+
+
+        }
+
+        private void LoadUserData()
+        {
+            var loadedData = DataStorage.Load();
+            if (loadedData != null)
+            {
+                // Sprachmodus wiederherstellen
+                isGermanToEnglish = loadedData.IsGermanToEnglish;
+
+                // WordList wiederherstellen
+                wordList.Clear();
+                foreach (var wp in loadedData.WordList)
+                {
+                    wordList.Add((wp.German, wp.English));
+                }
+
+                // incorrectWords wiederherstellen
+                incorrectWords.Clear();
+                foreach (var wp in loadedData.IncorrectWords)
+                {
+                    incorrectWords.Add((wp.German, wp.English));
+                }
+
+                // Button-Inhalt anpassen
+                langswitchbtn.Content = isGermanToEnglish ? "G/E" : "E/G";
+            }
         }
 
 
@@ -208,6 +252,39 @@ namespace EasyWordWPF_US5
             {
                 MessageBox.Show($"Fehler: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Daten für das Speichern vorbereiten
+            var data = new DataStorage.UserData
+            {
+                IsGermanToEnglish = isGermanToEnglish,
+                WordList = new List<DataStorage.WordPair>(),
+                IncorrectWords = new List<DataStorage.WordPair>()
+            };
+
+            // incorrectWords in die speicherbare Klasse umwandeln
+            foreach (var w in incorrectWords)
+            {
+                data.IncorrectWords.Add(new DataStorage.WordPair
+                {
+                    German = w.Item1,
+                    English = w.Item2
+                });
+            }
+
+            // wordList in die speicherbare Klasse umwandeln
+            foreach (var w in wordList)
+            {
+                data.WordList.Add(new DataStorage.WordPair
+                {
+                    German = w.Item1,
+                    English = w.Item2
+                });
+            }
+
+            // Jetzt speichern
+            DataStorage.Save(data);
         }
     }
 }
