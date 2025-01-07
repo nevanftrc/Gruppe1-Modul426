@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using EasyWordWPF;
 using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
@@ -76,7 +77,8 @@ namespace EasyWordWPF_US5
                 }
 
                 // Button-Inhalt anpassen
-                langswitchbtn.Content = isGermanToEnglish ? "G/E" : "E/G";
+                string imagePath = isGermanToEnglish ? "/germany.png" : "/uk.png";
+                langswitchImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
             }
         }
 
@@ -233,7 +235,8 @@ namespace EasyWordWPF_US5
             isGermanToEnglish = !isGermanToEnglish;
             string mode = isGermanToEnglish ? "Deutsch -> Englisch" : "Englisch -> Deutsch";
             MessageBox.Show($"Modus geändert: {mode}", "Moduswechsel", MessageBoxButton.OK, MessageBoxImage.Information);
-            langswitchbtn.Content = isGermanToEnglish ? "G/E" : "E/G";
+            string imagePath = isGermanToEnglish ? "/germany.png" : "/uk.png";
+            langswitchImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
         }
 
         private void Close(object sender, RoutedEventArgs e)

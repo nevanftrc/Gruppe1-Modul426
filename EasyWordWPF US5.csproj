@@ -14,7 +14,9 @@
     <None Remove="file-icon.png" />
     <None Remove="folder-1485.png" />
     <None Remove="Gear-01.png" />
+    <None Remove="germany.png" />
     <None Remove="round-information-icon.png" />
+    <None Remove="uk.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +28,9 @@
     <Resource Include="file-icon.png" />
     <Resource Include="folder-1485.png" />
     <Resource Include="Gear-01.png" />
+    <Resource Include="germany.png" />
     <Resource Include="round-information-icon.png" />
+    <Resource Include="uk.png" />
   </ItemGroup>
 
 </Project>

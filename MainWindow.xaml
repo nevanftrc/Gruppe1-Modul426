@@ -34,13 +34,8 @@
 
         </StackPanel>
 
-        <!-- G/E-Button rechts -->
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0">
-            <Button x:Name="langswitchbtn" Content="G/E" Width="50" Margin="10"
-                    Click="SwitchModeButton_Click"/>
-        </StackPanel>
         <!--Toolbar für visual design-->
-        <ToolBarPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
+        <ToolBarPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top" Width="632">
             <Button Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/folder-1485.png"></Image>
             </Button>
@@ -53,6 +48,13 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenInfo_Click">
                 <Image Source="/round-information-icon.png" ></Image>
             </Button>
+            <!-- G/E-Button rechts -->
+            <Grid MinWidth="450">
+                <Button x:Name="langswitchbtn"
+                    Click="SwitchModeButton_Click" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <Image  x:Name="langswitchImage" Source="/germany.png" Height="30" Width="60"></Image>
+                </Button>
+            </Grid>
         </ToolBarPanel>
     </Grid>
 </Window>
