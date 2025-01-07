@@ -174,7 +174,11 @@ namespace EasyWordWPF_US5
                 MessageBox.Show("Alle Wörter wurden erfolgreich beantwortet!", "Quiz abgeschlossen", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-
+        private void OpenSettings(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow Settings = new SettingsWindow();
+            Settings.Show();
+        }
         private void SwitchModeButton_Click(object sender, RoutedEventArgs e)
         {
             isGermanToEnglish = !isGermanToEnglish;

@@ -45,11 +45,11 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/file-icon.png"></Image>
             </Button>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button Click="OpenSettings" Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/Gear-01.png"></Image>
             </Button>
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="InfoButton_Click">
-                <Image Source="/round-information-icon.png" Width="40" Height="40"/>
+                <Image Source="/round-information-icon.png" Width="40" Height="35"/>
             </Button>
 
         </ToolBarPanel>
