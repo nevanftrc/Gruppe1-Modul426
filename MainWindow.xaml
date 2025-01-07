@@ -27,13 +27,7 @@
                     Click="Close"/>
 
             <!-- Bereich für Software-Informationen -->
-            <StackPanel Margin="10">
-                <TextBlock Text="ÜbersetzerQuiz" FontSize="16" FontWeight="Bold" Margin="0,10,0,10"/>
-                <TextBlock Text="{Binding DeveloperName}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Version}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding BuildDate}" Margin="0,5,0,0"/>
-                <TextBlock Text="Falls ein Problem auftreten sollte, wenden sie sich bitte an EasyWord." Margin="0,5,0,0"/>
-            </StackPanel>
+           
         </StackPanel>
 
         <!-- G/E-Button rechts -->
@@ -52,9 +46,10 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/Gear-01.png"></Image>
             </Button>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
-                <Image Source="/round-information-icon.png" ></Image>
+            <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="InfoButton_Click">
+                <Image Source="/round-information-icon.png" Width="40" Height="40"/>
             </Button>
+
         </ToolBarPanel>
     </Grid>
 </Window>

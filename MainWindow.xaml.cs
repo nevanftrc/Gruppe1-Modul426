@@ -13,7 +13,15 @@ namespace EasyWordWPF_US5
     {
         private Buckets myBucket;
         // Eigenschaften für die Software-Informationen
-   
+
+        private void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Erstelle und zeige das InfoDialog-Fenster
+            InfoDialog infoDialog = new InfoDialog();
+            infoDialog.ShowDialog();
+        }
+
+
         public string DeveloperName { get; set; } = "Gruppe1";
         public string Version { get; set; } = "1.0.0";
         // BuildDate dynamisch setzen
