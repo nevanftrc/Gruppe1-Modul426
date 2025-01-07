@@ -1,31 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
 namespace EasyWordWPF_US5.Models
 {
-    public static class StatisticsManager
+    public class StatisticsService
     {
         private const string FilePath = "statistics.json";
+        private Dictionary<string, WordStatistics> statistics;
 
-        public static Dictionary<string, WordStatistics> LoadStatistics()
+        public StatisticsService()
         {
-            if (!File.Exists(FilePath)) return new Dictionary<string, WordStatistics>();
-
-            var json = File.ReadAllText(FilePath);
-            return JsonConvert.DeserializeObject<Dictionary<string, WordStatistics>>(json) ?? new Dictionary<string, WordStatistics>();
+            LoadStatistics();
         }
 
-        public static void SaveStatistics(Dictionary<string, WordStatistics> statistics)
+        private void LoadStatistics()
         {
-            var json = JsonConvert.SerializeObject(statistics, Newtonsoft.Json.Formatting.Indented);
+            if (File.Exists(FilePath))
+            {
+                var json = File.ReadAllText(FilePath);
+                statistics = JsonConvert.DeserializeObject<Dictionary<string, WordStatistics>>(json) ?? new Dictionary<string, WordStatistics>();
+            }
+            else
+            {
+                statistics = new Dictionary<string, WordStatistics>();
+            }
+        }
+
+        public void SaveStatistics()
+        {
+            var json = JsonConvert.SerializeObject(statistics, Formatting.Indented);
             File.WriteAllText(FilePath, json);
+        }
+
+        public WordStatistics GetOrCreateStatistics(string german, string english)
+        {
+            string key = $"{german}:{english}";
+            if (!statistics.TryGetValue(key, out var stats))
+            {
+                stats = new WordStatistics { German = german, English = english };
+                statistics[key] = stats;
+            }
+            return stats;
+        }
+
+        public void ResetStatistics()
+        {
+            statistics.Clear();
+            SaveStatistics();
         }
     }
 
+    public class WordStatistics
+    {
+        public string German { get; set; }
+        public string English { get; set; }
+        public int CorrectCount { get; set; } = 0;
+        public int IncorrectCount { get; set; } = 0;
+    }
 }

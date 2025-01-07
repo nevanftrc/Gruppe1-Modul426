@@ -25,6 +25,8 @@
                     Click="ImportCsvButton_Click"/>
             <Button Content="Quiz starten" Width="200" Margin="10"
                     Click="StartQuizButton_Click"/>
+            <Button Content="Statistiken zurücksetzen" Width="200" Margin="10"
+                    Click="ResetStatisticsButton_Click"/>
             <Button Content="Beenden" Width="200" Margin="10"
                     Click="Close"/>
 

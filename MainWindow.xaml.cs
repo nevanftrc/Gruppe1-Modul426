@@ -13,9 +13,10 @@ namespace EasyWordWPF_US5
     public partial class MainWindow : Window
     {
         private Buckets myBucket;
+        private StatisticsService statisticsService;
         // Eigenschaften für die Software-Informationen
 
-   
+
         public string DeveloperName { get; set; } = "Gruppe1";
 
 
@@ -41,6 +42,7 @@ namespace EasyWordWPF_US5
 
             InitializeComponent();
             myBucket = new Buckets();
+            statisticsService = new StatisticsService();
         }
 
 
@@ -168,6 +170,9 @@ namespace EasyWordWPF_US5
                 currentWordIndex = random.Next(wordList.Count);
                 var currentWord = wordList[currentWordIndex];
 
+                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
+                MessageBox.Show($"Statistik:\\nKorrekt: {stats.CorrectCount}\\nFalsch: {stats.IncorrectCount}", "Wortstatistik", MessageBoxButton.OK);
+
                 string question = isGermanToEnglish
                     ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?"
                     : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?";
@@ -186,18 +191,21 @@ namespace EasyWordWPF_US5
 
                 if (isCorrect)
                 {
+                    stats.CorrectCount++; 
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
                     wordList.RemoveAt(currentWordIndex);
                 }
                 else
                 {
+                    stats.IncorrectCount++; 
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
-                    incorrectWords.Add(currentWord); // Add to incorrect list
+                    incorrectWords.Add(currentWord); 
                 }
+
+                statisticsService.SaveStatistics(); 
             }
 
-            // Handle next iteration with incorrect words
             if (incorrectWords.Any())
             {
                 wordList = new List<(string, string)>(incorrectWords);
@@ -208,6 +216,15 @@ namespace EasyWordWPF_US5
             else
             {
                 MessageBox.Show("Alle Wörter wurden erfolgreich beantwortet!", "Quiz abgeschlossen", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void ResetStatisticsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Möchten Sie wirklich alle Statistiken zurücksetzen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                statisticsService.ResetStatistics();
+                MessageBox.Show("Statistiken wurden zurückgesetzt.", "Info", MessageBoxButton.OK);
             }
         }
 
