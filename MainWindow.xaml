@@ -4,18 +4,20 @@
         Title="EasyWord - Wortquiz" Height="350" Width="687" WindowStartupLocation="CenterScreen" Icon="/book.png">
     <Grid>
         <!--bucket gui-->
-        <Grid Margin="513,0,0,0" HorizontalAlignment="Left" Width="129" Height="133" VerticalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
+        <Grid Margin="0,40,80,161" HorizontalAlignment="Right" Width="129">
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Text="Bucket Ahz" Grid.Row="0" Margin="0,0,-1,0"/>
-            <Button x:Name="addbtn" Content="^" Grid.Row="1" MaxWidth="30" Click="bucketAdd" MaxHeight="30"/>
-            <Label x:Name="numtxtbo" Content="0" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
-            <Button x:Name="subbtn" Content="v" Grid.Row="3" MaxWidth="30" MaxHeight="30" Click="bucketRem"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <Button x:Name="addbtn" Content="^" Grid.Row="1" MaxWidth="30" Click="bucketAdd" MaxHeight="30"/>
+                <Label x:Name="numtxtbo" Content="0" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
+                <Button x:Name="subbtn" Content="v" Grid.Row="3" MaxWidth="30" MaxHeight="30" Click="bucketRem"/>
+            </Grid>
         </Grid>
         <!-- Hauptbereich mit Buttons -->
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
