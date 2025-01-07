@@ -11,6 +11,10 @@
 
   <ItemGroup>
     <None Remove="book.png" />
+    <None Remove="file-icon.png" />
+    <None Remove="folder-1485.png" />
+    <None Remove="Gear-01.png" />
+    <None Remove="round-information-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +23,10 @@
 
   <ItemGroup>
     <Resource Include="book.png" />
+    <Resource Include="file-icon.png" />
+    <Resource Include="folder-1485.png" />
+    <Resource Include="Gear-01.png" />
+    <Resource Include="round-information-icon.png" />
   </ItemGroup>
 
 </Project>

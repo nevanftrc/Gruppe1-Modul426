@@ -172,6 +172,7 @@ namespace EasyWordWPF_US5
             isGermanToEnglish = !isGermanToEnglish;
             string mode = isGermanToEnglish ? "Deutsch -> Englisch" : "Englisch -> Deutsch";
             MessageBox.Show($"Modus geändert: {mode}", "Moduswechsel", MessageBoxButton.OK, MessageBoxImage.Information);
+            langswitchbtn.Content = isGermanToEnglish ? "G/E" : "E/G";
         }
 
         private void Close(object sender, RoutedEventArgs e)
