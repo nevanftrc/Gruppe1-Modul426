@@ -27,5 +27,9 @@ namespace EasyWordWPF_US5
             CurrentDate = DateTime.Now.ToString("dd.MM.yyyy");  // Setze das heutige Datum
             DataContext = this;  // Setze den DataContext für das Binding
         }
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+           this.Close();
+        }
     }
 }
