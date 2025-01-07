@@ -1,10 +1,10 @@
 ﻿<Window x:Class="EasyWordWPF_US5.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EasyWord - Wortquiz" Height="350" Width="687" WindowStartupLocation="CenterScreen" Icon="/book.png">
+        Title="EasyWord - Wortquiz" Height="243" Width="687" WindowStartupLocation="CenterScreen" Icon="/book.png">
     <Grid>
         <!--bucket gui-->
-        <Grid Margin="0,40,80,161" HorizontalAlignment="Right" Width="129">
+        <Grid Margin="0,40,80,62" HorizontalAlignment="Right" Width="129">
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Text="Bucket Ahz" Grid.Row="0" Margin="0,0,-1,0"/>
             <Grid>
                 <Grid.RowDefinitions>
@@ -20,7 +20,7 @@
             </Grid>
         </Grid>
         <!-- Hauptbereich mit Buttons -->
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,45,0,0">
             <Button Content="CSV-Datei importieren" Width="200" Margin="10"
                     Click="ImportCsvButton_Click"/>
             <Button Content="Quiz starten" Width="200" Margin="10"
@@ -29,13 +29,7 @@
                     Click="Close"/>
 
             <!-- Bereich für Software-Informationen -->
-            <StackPanel Margin="10">
-                <TextBlock Text="ÜbersetzerQuiz" FontSize="16" FontWeight="Bold" Margin="0,10,0,10"/>
-                <TextBlock Text="{Binding DeveloperName}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Version}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding BuildDate}" Margin="0,5,0,0"/>
-                <TextBlock Text="Falls ein Problem auftreten sollte, wenden sie sich bitte an EasyWord." Margin="0,5,0,0"/>
-            </StackPanel>
+
         </StackPanel>
 
         <!-- G/E-Button rechts -->
@@ -51,10 +45,10 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/file-icon.png"></Image>
             </Button>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button Click="OpenSettings" Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/Gear-01.png"></Image>
             </Button>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenInfo_Click">
                 <Image Source="/round-information-icon.png" ></Image>
             </Button>
         </ToolBarPanel>

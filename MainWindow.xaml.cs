@@ -286,6 +286,17 @@ namespace EasyWordWPF_US5
             // Jetzt speichern
             DataStorage.Save(data);
         }
+
+        private void OpenSettings(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.Show();
+        }
+        private void OpenInfo_Click(object sender, RoutedEventArgs e)
+        {
+            InfoDialog infoDialog = new InfoDialog();
+            infoDialog.Show();
+        }
     }
 }
 //Test
