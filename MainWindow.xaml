@@ -36,8 +36,8 @@
 
         <!--Toolbar für visual design-->
         <ToolBarPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top" Width="632">
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
-                <Image Source="/folder-1485.png"></Image>
+            <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenFileDialog_Click">
+                <Image Source="/folder-1485.png" Width="40" Height="40"/>
             </Button>
             <Button Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/file-icon.png"></Image>

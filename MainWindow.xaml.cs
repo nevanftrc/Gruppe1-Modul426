@@ -13,6 +13,58 @@ namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
     {
+
+        private void OpenFileDialog_Click(object sender, RoutedEventArgs e)
+        {
+            // Erstelle ein OpenFileDialog-Objekt
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "CSV files (*.csv)|*.csv",  // Zeige nur CSV-Dateien an
+                Title = "Wählen Sie eine CSV-Datei aus"
+            };
+
+            // Zeige den Dialog an und überprüfe, ob der Benutzer eine Datei ausgewählt hat
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Der Benutzer hat eine Datei ausgewählt
+                string selectedFilePath = openFileDialog.FileName;
+
+                try
+                {
+                    var newCsvData = File.ReadAllLines(selectedFilePath).ToList();
+                    List<(string, string)> tempList = new List<(string, string)>();
+
+                    // CSV-Datei zeilenweise einlesen
+                    foreach (var line in newCsvData)
+                    {
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+
+                        var parts = line.Split(';');
+                        if (parts.Length != 2)
+                        {
+                            MessageBox.Show($"Fehlerhafte Zeile: {line}", "Importfehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                            continue;
+                        }
+                        tempList.Add((parts[0].Trim(), parts[1].Trim()));  // Wörter zur Liste hinzufügen
+                    }
+
+                    // Aktualisiere die Wortliste
+                    wordList = tempList;
+                    incorrectWords.Clear();  // Leere die Liste der falschen Antworten
+                    MessageBox.Show("Die CSV-Datei wurde erfolgreich geladen.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Hinweis, dass das Quiz manuell gestartet werden muss
+                    MessageBox.Show("Klicken Sie auf 'Quiz Starten', um das Quiz zu beginnen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Fehler beim Importieren der Datei: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+
+
         private Buckets myBucket;
         private StatisticsService statisticsService;
         // Eigenschaften für die Software-Informationen
