@@ -1,6 +1,8 @@
 ﻿using EasyWordWPF_US5.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace EasyWordWPF
 {
@@ -9,7 +11,9 @@ namespace EasyWordWPF
         public int bucket_count => buckets.Count; // Number of buckets
         public List<List<CSVlist>> buckets { get; private set; } // Buckets storing words
 
-        public Buckets(int initialBucketCount = 3) // Default 3 buckets
+
+
+        public Buckets(int initialBucketCount = 5) // Default count
         {
             buckets = new List<List<CSVlist>>();
             for (int i = 0; i < initialBucketCount; i++)
@@ -100,5 +104,61 @@ namespace EasyWordWPF
             }
         }
 
+        // Move words based on correct or incorrect
+        public void UpdateWordBucket(CSVlist word, bool isCorrect)
+        {
+            int currentBucket = -1;
+            for (int i = 0; i < bucket_count; i++)
+            {
+                if (buckets[i].Contains(word))
+                {
+                    currentBucket = i;
+                    break;
+                }
+            }
+
+            if (currentBucket == -1)
+                throw new Exception("Word not found in any bucket.");
+
+            if (isCorrect)
+            {
+                word.CorrectCount++;
+                int targetBucket = Math.Min(currentBucket + 1, bucket_count - 1); // Move to the next bucket (max is the last bucket)
+                MoveWord(word, currentBucket, targetBucket);
+            }
+            else
+            {
+                word.IncorrectCount++;
+                MoveWord(word, currentBucket, 0); // Move to the first bucket if incorrect
+            }
+        }
+
+        // Save the buckets to JSON
+        public void SaveBucketsToJson()
+        {
+            // Define the file path relative to the application's runtime directory
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
+
+            // Serialize the buckets data to JSON
+            var jsonData = JsonConvert.SerializeObject(buckets, Formatting.Indented);
+
+            // Write the JSON data to the file
+            File.WriteAllText(filePath, jsonData);
+
+            // Optional: Inform the user that the file was saved
+            Console.WriteLine($"Buckets data saved to: {filePath}");
+        }
+
+
+        // Load buckets from JSON
+        public void LoadBucketsFromJson(string json)
+        {
+            var loadedBuckets = JsonConvert.DeserializeObject<List<List<CSVlist>>>(json);
+
+            if (loadedBuckets == null || loadedBuckets.Count != bucket_count)
+                throw new Exception("Invalid bucket data.");
+
+            buckets = loadedBuckets;
+        }
     }
 }
