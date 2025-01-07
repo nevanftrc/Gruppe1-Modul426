@@ -11,9 +11,8 @@ namespace EasyWordWPF_US5.Models
     {
         public string en_words { get; set; }
         public string de_words { get; set; }
-        public int recurance { get; set; } = 1;
-
-        public string Words { get; set; }
+        public int CorrectCount { get; set; } = 0;
+        public int IncorrectCount { get; set; } = 0;
 
         //add here more
         private string filestring { get; set; }
@@ -23,7 +22,6 @@ namespace EasyWordWPF_US5.Models
             en_words = string.Empty;
             de_words = string.Empty;
             filestring = string.Empty;
-            Words = string.Empty;
         }
         public CSVlist(string deutsche_woerter, string englische_woerter)
         {
