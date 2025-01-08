@@ -26,13 +26,6 @@ namespace EasyWordWPF_US5
         }
 
 
-
-
-
-
-
-
-
         private void OpenFileDialog_Click(object sender, RoutedEventArgs e)
         {
             // Erstelle ein OpenFileDialog-Objekt
@@ -120,6 +113,8 @@ namespace EasyWordWPF_US5
             //Initialize json
             exportClass = new ExportClass();
             exportClass.EnsureAppSettings();
+
+
         }
 
 
@@ -369,6 +364,9 @@ namespace EasyWordWPF_US5
         {
             SettingsWindow settingsWindow = new SettingsWindow(this);  // Übergibt die Instanz von MainWindow
             settingsWindow.Show();
+            exportClass.ReadSettings();
+            settingsWindow.checkcheckboxsettings(exportClass.UseDefault);
+
         }
 
         private void OpenInfo_Click(object sender, RoutedEventArgs e)

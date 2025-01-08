@@ -24,6 +24,8 @@ namespace EasyWordWPF_US5
         private MainWindow mainWindow;
         private readonly ExportClass exportClass;
 
+        public bool check_value = false;
+
         public SettingsWindow(MainWindow mainWindowInstance)
         {
             InitializeComponent();
@@ -37,27 +39,31 @@ namespace EasyWordWPF_US5
             //path display
             userdefinedpathbox.Text = !string.IsNullOrWhiteSpace(exportClass.UserPath ?? string.Empty)
             ? exportClass.UserPath
-            : "Path not defined.";
-            // checker
-            exportpathcheck.IsChecked = !exportClass.UseDefault;
-        }
+            : "Kein Pfad Vorhanden";
 
+            // checker
+            exportpathcheck.IsChecked = false;
+
+        }
 
         // Event-Handler für den Apply-Button
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             // Ändere den Zustand von Groß-/Kleinschreibung basierend auf dem Wert der Checkbox
             mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
+            Label selectedLabel = (Label)dataextension.SelectedItem;
+            string labelContent = selectedLabel?.Content?.ToString() ?? string.Empty;
+
 
             if (exportpathcheck.IsChecked == true)
             {
                 // When checked, apply the user-defined path
-                exportClass.UpdateSettings(false, userdefinedpathbox.Text);
+                exportClass.UpdateSettings(false, userdefinedpathbox.Text, labelContent);
             }
             else
             {
                 // If unchecked, reset to the default or empty path
-                exportClass.UpdateSettings(true, string.Empty);
+                exportClass.UpdateSettings(true, string.Empty, labelContent);
             }
 
 
@@ -81,6 +87,20 @@ namespace EasyWordWPF_US5
         {
             userdefinedpathbox.IsEnabled = false;
         }
+
+        // checkerbox
+       public void checkcheckboxsettings(bool item)
+        {
+            if (item == true)
+            {
+                exportpathcheck.IsChecked = false;
+            }
+            else
+            {
+                exportpathcheck.IsChecked = true;
+            }
+        }
+
     }
 
 }

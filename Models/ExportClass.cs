@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace EasyWordWPF_US5.Models
 {
@@ -17,7 +18,11 @@ namespace EasyWordWPF_US5.Models
         public string DefaultPath { get; set; }
         public string UserPath { get; set; }
         public bool UseDefault { get; set; }
+        public string dataextension { get; set; }
+
         private readonly string appSettingsFilePath;
+
+        public SettingsWindow settingsWindow { get; set; }
 
         public ExportClass()
         {
@@ -29,9 +34,10 @@ namespace EasyWordWPF_US5.Models
             appSettingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             UserPath = string.Empty;
             UseDefault = true;
+            dataextension = "JSON";
         }
 
-        public void UpdateSettings(bool useDefault, string userPath)
+        public void UpdateSettings(bool useDefault, string userPath, string extension)
         {
             UseDefault = useDefault;
             UserPath = userPath.Replace('\\', '/'); // Normalize path for Linux/Windows compatibility
@@ -40,7 +46,8 @@ namespace EasyWordWPF_US5.Models
             {
                 DefaultPath = DefaultPath,
                 UserPath = UserPath,
-                UseDefault = UseDefault
+                UseDefault = UseDefault,
+                DataExtension = extension
             };
 
             string json = JsonConvert.SerializeObject(updatedSettings, Formatting.Indented);
@@ -55,7 +62,8 @@ namespace EasyWordWPF_US5.Models
                 {
                     DefaultPath = DefaultPath,
                     UserPath = UserPath,
-                    UseDefault = UseDefault
+                    UseDefault = UseDefault,
+                    DataExtension = dataextension
                 };
 
                 string json = JsonConvert.SerializeObject(defaultSettings, Formatting.Indented);
