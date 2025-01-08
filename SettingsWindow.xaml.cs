@@ -1,5 +1,8 @@
-﻿using System;
+﻿using EasyWordWPF_US5.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +22,7 @@ namespace EasyWordWPF_US5
     public partial class SettingsWindow : Window
     {
         private MainWindow mainWindow;
+        private readonly ExportClass exportClass;
 
         public SettingsWindow(MainWindow mainWindowInstance)
         {
@@ -27,7 +31,17 @@ namespace EasyWordWPF_US5
 
             // Setze den aktuellen Zustand der Checkbox basierend auf dem Status im MainWindow
             CheckGrammar.IsChecked = !mainWindow.isCaseSensitive; // Wenn isCaseSensitive true, wird die Checkbox deaktiviert (beachtet Groß/Kleinschreibung)
+
+            // export settings :)
+            exportClass = new ExportClass();
+            //path display
+            userdefinedpathbox.Text = !string.IsNullOrWhiteSpace(exportClass.UserPath ?? string.Empty)
+            ? exportClass.UserPath
+            : "Path not defined.";
+            // checker
+            exportpathcheck.IsChecked = !exportClass.UseDefault;
         }
+
 
         // Event-Handler für den Apply-Button
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
@@ -35,13 +49,37 @@ namespace EasyWordWPF_US5
             // Ändere den Zustand von Groß-/Kleinschreibung basierend auf dem Wert der Checkbox
             mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
 
+            if (exportpathcheck.IsChecked == true)
+            {
+                // When checked, apply the user-defined path
+                exportClass.UpdateSettings(false, userdefinedpathbox.Text);
+            }
+            else
+            {
+                // If unchecked, reset to the default or empty path
+                exportClass.UpdateSettings(true, string.Empty);
+            }
+
+
             MessageBox.Show("Einstellungen angewendet!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+
         }
 
         // Event-Handler für den Close-Button
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        //export settings
+        private void ExportPathCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            userdefinedpathbox.IsEnabled = true;
+        }
+
+        private void ExportPathCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            userdefinedpathbox.IsEnabled = false;
         }
     }
 

@@ -86,6 +86,7 @@ namespace EasyWordWPF_US5
 
         private Buckets myBucket;
         private StatisticsService statisticsService;
+        private ExportClass exportClass;
         // Eigenschaften für die Software-Informationen
 
 
@@ -115,6 +116,10 @@ namespace EasyWordWPF_US5
             InitializeComponent();
             myBucket = new Buckets();
             statisticsService = new StatisticsService();
+
+            //Initialize json
+            exportClass = new ExportClass();
+            exportClass.EnsureAppSettings();
         }
 
 

@@ -7,10 +7,22 @@
         <CheckBox x:Name="CheckGrammar" Content="Groß-/Kleinschreibung ignorieren" HorizontalAlignment="Left" Margin="27,41,0,0" VerticalAlignment="Top"/>
         <Label Content="Keysensitive Grammatik" HorizontalAlignment="Left" Margin="21,15,0,0" VerticalAlignment="Top"/>
 
+        <!--Export settings-->
+        <Label Content="Export path" Margin="21,61,149,143" />
+
         <!-- Button zum Anwenden der Änderungen -->
-        <Button Content="Apply" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="205,204,60,10" Click="ApplyButton_Click"/>
+        <Button Content="Apply" VerticalAlignment="Top" Margin="170,204,0,0" Click="ApplyButton_Click" HorizontalAlignment="Left" Width="54"/>
 
         <!-- Button zum Schließen des Fensters -->
-        <Button Content="Close" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="250,204,17,10" Click="CloseButton_Click"/>
+        <Button Content="Close" VerticalAlignment="Top" Margin="236,204,0,0" Click="CloseButton_Click" HorizontalAlignment="Left" Width="54"/>
+        <CheckBox x:Name="exportpathcheck"  Content="Benütze Benutzerdefenierte Pfad" HorizontalAlignment="Left" Margin="27,91,0,0" VerticalAlignment="Top" Checked="ExportPathCheck_Checked" 
+          Unchecked="ExportPathCheck_Unchecked"/>
+        <TextBox x:Name="userdefinedpathbox"  IsEnabled="False" HorizontalAlignment="Left" Margin="29,111,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="195"/>
+        <Label Content="Datenendung" HorizontalAlignment="Left" Margin="27,134,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="dataextension" HorizontalAlignment="Left" Margin="30,160,0,0" VerticalAlignment="Top" Width="194" SelectedIndex="2">
+            <Label Content="CSV"></Label>
+            <Label Content="TXT"></Label>
+            <Label Content="JSON"></Label>
+        </ComboBox>
     </Grid>
 </Window>
