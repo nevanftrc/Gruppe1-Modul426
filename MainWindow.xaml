@@ -29,6 +29,9 @@
                     Click="ResetStatisticsButton_Click"/>
             <Button Content="Beenden" Width="200" Margin="10"
                     Click="Close"/>
+            <Button Content="Alles zurücksetzen" Width="200" Margin="10"
+            Click="ResetAllWordsButton_Click" />
+
 
             <!-- Bereich für Software-Informationen -->
 
@@ -48,6 +51,7 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenInfo_Click">
                 <Image Source="/round-information-icon.png" ></Image>
             </Button>
+            
             <!-- G/E-Button rechts -->
             <Grid MinWidth="450">
                 <Button x:Name="langswitchbtn"

@@ -374,6 +374,42 @@ namespace EasyWordWPF_US5
             InfoDialog infoDialog = new InfoDialog();
             infoDialog.Show();
         }
+        private void ResetAllWordsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Sicherheitsabfrage, damit der Benutzer den Vorgang bestätigen muss
+            if (MessageBox.Show("Möchten Sie wirklich alle Wörter zurücksetzen? " +
+                                "Dies löscht auch die Statistik.",
+                                "Bestätigung",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                // 1) Wörter leeren
+                wordList.Clear();
+                incorrectWords.Clear();
+
+                // 2) Statistik zurücksetzen
+                statisticsService.ResetStatistics();
+
+                // 3) Leere User-Daten speichern
+                var emptyData = new DataStorage.UserData
+                {
+                    IsGermanToEnglish = isGermanToEnglish,
+                    // Oder auf einen Standardwert setzen:
+                    // IsGermanToEnglish = true,
+                    WordList = new List<DataStorage.WordPair>(),
+                    IncorrectWords = new List<DataStorage.WordPair>()
+                };
+                DataStorage.Save(emptyData);
+
+                // Hinweis an den Benutzer
+                MessageBox.Show("Alle Wörter und Statistiken wurden gelöscht. " +
+                                "Bitte importieren Sie neue Wörter, um fortzufahren.",
+                                "Erfolg",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+            }
+        }
+
     }
 }
 //Test
