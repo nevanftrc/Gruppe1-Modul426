@@ -42,7 +42,7 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenFileDialog_Click">
                 <Image Source="/folder-1485.png" Width="40" Height="40"/>
             </Button>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OnFileExport_Click">
                 <Image Source="/file-icon.png"></Image>
             </Button>
             <Button Click="OpenSettings" Background="{x:Null}" BorderBrush="{x:Null}">

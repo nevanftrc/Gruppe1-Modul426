@@ -44,6 +44,10 @@ namespace EasyWordWPF_US5
             // checker
             exportpathcheck.IsChecked = false;
 
+            DataContext = exportClass;
+
+            LoadComboBoxFromSettings();
+
         }
 
         // Event-Handler für den Apply-Button
@@ -51,19 +55,20 @@ namespace EasyWordWPF_US5
         {
             // Ändere den Zustand von Groß-/Kleinschreibung basierend auf dem Wert der Checkbox
             mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
-            Label selectedLabel = (Label)dataextension.SelectedItem;
-            string labelContent = selectedLabel?.Content?.ToString() ?? string.Empty;
+            ComboBoxItem selectedItem = dataextension.SelectedItem as ComboBoxItem;
+            string selectedContent = selectedItem?.Content?.ToString() ?? string.Empty;
+
 
 
             if (exportpathcheck.IsChecked == true)
             {
                 // When checked, apply the user-defined path
-                exportClass.UpdateSettings(false, userdefinedpathbox.Text, labelContent);
+                exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent);
             }
             else
             {
                 // If unchecked, reset to the default or empty path
-                exportClass.UpdateSettings(true, string.Empty, labelContent);
+                exportClass.UpdateSettings(true, string.Empty, selectedContent);
             }
 
 
@@ -89,7 +94,7 @@ namespace EasyWordWPF_US5
         }
 
         // checkerbox
-       public void checkcheckboxsettings(bool item)
+        public void checkcheckboxsettings(bool item)
         {
             if (item == true)
             {
@@ -100,7 +105,31 @@ namespace EasyWordWPF_US5
                 exportpathcheck.IsChecked = true;
             }
         }
+        public void LoadComboBoxFromSettings()
+        {
+            // Read the value from the JSON
+            exportClass.ReadSettings();
+
+            // Get the value from the JSON
+            string savedExtension = exportClass.dataextension;
+
+            // Iterate over ComboBox items to find the matching one
+            foreach (var item in dataextension.Items)
+            {
+                if (item is ComboBoxItem comboBoxItem)
+                {
+                    if (comboBoxItem.Content.ToString().Equals(savedExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Match found, select it
+                        dataextension.SelectedItem = comboBoxItem;
+                        return;
+                    }
+                }
+            }
+
+            // If no match is found, reset to the default
+            dataextension.SelectedIndex = 0; // Optional: set to first item if no match
+        }
 
     }
-
 }

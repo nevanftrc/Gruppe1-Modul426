@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using EasyWordWPF;
 using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace EasyWordWPF_US5
 {
@@ -80,14 +81,11 @@ namespace EasyWordWPF_US5
         private Buckets myBucket;
         private StatisticsService statisticsService;
         private ExportClass exportClass;
+        private SettingsWindow settingsWindow;
         // Eigenschaften für die Software-Informationen
 
 
-        public string DeveloperName { get; set; } = "Gruppe1";
-
-
-
-        
+        public string DeveloperName { get; set; } = "Gruppe1"; 
         public string Version { get; set; } = "1.0.0";
         // BuildDate dynamisch setzen
         public string BuildDate { get; set; } = DateTime.Now.ToString("dd.MM.yyyy");
@@ -109,6 +107,7 @@ namespace EasyWordWPF_US5
             InitializeComponent();
             myBucket = new Buckets();
             statisticsService = new StatisticsService();
+            settingsWindow = new SettingsWindow(this);
 
             //Initialize json
             exportClass = new ExportClass();
@@ -121,8 +120,6 @@ namespace EasyWordWPF_US5
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadUserData();
-
-
         }
 
         private void LoadUserData()
@@ -369,6 +366,68 @@ namespace EasyWordWPF_US5
 
         }
 
+        private void OnFileExport_Click(object sender, RoutedEventArgs e) 
+        {
+            exportClass.ReadSettings();
+            try
+            {
+                // Ensure the AppData path exists
+                string loaderFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
+
+                if (!File.Exists(loaderFilePath))
+                {
+                    MessageBox.Show("file not found in AppData.");
+                    return;
+                }
+
+                // Load the settings (assuming JSON format for simplicity)
+                string jsonContent = File.ReadAllText(loaderFilePath);
+                var exportjson = JsonConvert.DeserializeObject<ExportClass>(jsonContent);
+                string[] lines = File.ReadAllLines("statistics.json");
+
+                if (lines.Length > 2)
+                {
+                    // Ignore the top and bottom lines
+                    var relevantLines = lines.Skip(1).Take(lines.Length - 2);
+
+                    // Process relevant lines here (or return nothing if empty)
+                    if (relevantLines.Any())
+                    {
+                        // Assuming you are extracting something from the lines
+                        foreach (var line in relevantLines)
+                        {
+                            // Process each line as required
+                            // For example, extracting data and calling the export method
+                            var processedData = ProcessLine(line); // Implement your line processing logic here
+
+                            // Call the export method with relevant data
+                            exportClass.exporterMethod(
+                                word: exportjson.Germanword,
+                                word2: exportjson.Englishword,
+                                one: exportjson.CorrectCount,
+                                two: exportjson.IncorrectCount,
+                                comboboxValue: exportClass.dataextension,
+                                filename: exportClass.UserPath,
+                                Userdefined: exportClass.UseDefault
+                            );
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No relevant data found in the file.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               MessageBox.Show("error" + ex);
+            }
+        }
+        private string ProcessLine(string line)
+        {
+            // Implement your line parsing or processing logic here
+            return line; // Example return statement
+        }
         private void OpenInfo_Click(object sender, RoutedEventArgs e)
         {
             InfoDialog infoDialog = new InfoDialog();
