@@ -9,6 +9,7 @@ using EasyWordWPF;
 using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using static System.Net.WebRequestMethods;
 
 namespace EasyWordWPF_US5
 {
@@ -44,7 +45,7 @@ namespace EasyWordWPF_US5
 
                 try
                 {
-                    var newCsvData = File.ReadAllLines(selectedFilePath).ToList();
+                    var newCsvData = System.IO.File.ReadAllLines(selectedFilePath).ToList();
                     List<(string, string)> tempList = new List<(string, string)>();
 
                     // CSV-Datei zeilenweise einlesen
@@ -163,7 +164,7 @@ namespace EasyWordWPF_US5
             {
                 try
                 {
-                    var newCsvData = File.ReadAllLines(openFileDialog.FileName).ToList();
+                    var newCsvData = System.IO.File.ReadAllLines(openFileDialog.FileName).ToList();
                     List<(string, string)> tempList = new List<(string, string)>();
 
                     foreach (var line in newCsvData)
@@ -366,68 +367,84 @@ namespace EasyWordWPF_US5
 
         }
 
-        private void OnFileExport_Click(object sender, RoutedEventArgs e) 
+        private void OnFileExport_Click(object sender, RoutedEventArgs e)
         {
             exportClass.ReadSettings();
             try
             {
-                // Ensure the AppData path exists
+                // Path to the JSON statistics file
                 string loaderFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
 
-                if (!File.Exists(loaderFilePath))
+                // Ensure the directory for exports exists
+                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
+                Directory.CreateDirectory(appDataPath);
+
+                // Generate the filename
+                string username = Environment.UserName;
+                string date = DateTime.Now.ToString("yyyy-MM-dd");
+                string filename = $"{username}_{date}";
+
+                // If the file does not exist, inform the user and stop processing
+                if (!System.IO.File.Exists(loaderFilePath))
                 {
-                    MessageBox.Show("file not found in AppData.");
+                    MessageBox.Show("Statistics file not found in AppData.");
                     return;
                 }
 
-                // Load the settings (assuming JSON format for simplicity)
-                string jsonContent = File.ReadAllText(loaderFilePath);
-                var exportjson = JsonConvert.DeserializeObject<ExportClass>(jsonContent);
-                string[] lines = File.ReadAllLines("statistics.json");
+                // Load and parse JSON content
+                string jsonContent = System.IO.File.ReadAllText(loaderFilePath);
+                var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonContent);
 
-                if (lines.Length > 2)
+                // Extract only the inner objects (skip the outer key)
+                if (jsonObject != null)
                 {
-                    // Ignore the top and bottom lines
-                    var relevantLines = lines.Skip(1).Take(lines.Length - 2);
-
-                    // Process relevant lines here (or return nothing if empty)
-                    if (relevantLines.Any())
+                    foreach (var innerValue in jsonObject.Values)
                     {
-                        // Assuming you are extracting something from the lines
-                        foreach (var line in relevantLines)
+                        // Extract the relevant fields from the inner JSON object
+                        string germanWord = innerValue["German"]?.ToString() ?? string.Empty;
+                        string englishWord = innerValue["English"]?.ToString() ?? string.Empty;
+                        int correctCount = innerValue["CorrectCount"] != null ? (int)innerValue["CorrectCount"] : 0;
+                        int incorrectCount = innerValue["IncorrectCount"] != null ? (int)innerValue["IncorrectCount"] : 0;
+
+                        // Determine the export path
+                        string exportFilePath;
+                        if (!exportClass.UseDefault && !string.IsNullOrWhiteSpace(exportClass.UserPath))
                         {
-                            // Process each line as required
-                            // For example, extracting data and calling the export method
-                            var processedData = ProcessLine(line); // Implement your line processing logic here
-
-                            // Call the export method with relevant data
-                            exportClass.exporterMethod(
-                                word: exportjson.Germanword,
-                                word2: exportjson.Englishword,
-                                one: exportjson.CorrectCount,
-                                two: exportjson.IncorrectCount,
-                                comboboxValue: exportClass.dataextension,
-                                filename: exportClass.UserPath,
-                                Userdefined: exportClass.UseDefault
-                            );
+                            // If UseDefault is false and ExportPath is set, use the user-defined path
+                            exportFilePath = Path.Combine(exportClass.UserPath, $"{filename}.{exportClass.dataextension.ToLower()}");
                         }
+                        else
+                        {
+                            // Otherwise, use the default appDataPath
+                            exportFilePath = Path.Combine(appDataPath, $"{filename}.{exportClass.dataextension.ToLower()}");
+                        }
+
+                        // Call the export method with the extracted data
+                        exportClass.exporterMethod(
+                            word: germanWord,
+                            word2: englishWord,
+                            one: correctCount,
+                            two: incorrectCount,
+                            comboboxValue: exportClass.dataextension,
+                            filepath: exportFilePath,
+                            Userdefined: exportClass.UseDefault,
+                            filename: filename
+                        );
                     }
-                    else
-                    {
-                        Console.WriteLine("No relevant data found in the file.");
-                    }
+
+                    MessageBox.Show($"{exportClass.dataextension} data saved successfully under {appDataPath}");
+                }
+                else
+                {
+                    MessageBox.Show("No data found in the statistics file.");
                 }
             }
             catch (Exception ex)
             {
-               MessageBox.Show("error" + ex);
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
-        private string ProcessLine(string line)
-        {
-            // Implement your line parsing or processing logic here
-            return line; // Example return statement
-        }
+
         private void OpenInfo_Click(object sender, RoutedEventArgs e)
         {
             InfoDialog infoDialog = new InfoDialog();

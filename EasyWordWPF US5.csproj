@@ -15,6 +15,7 @@
     <None Remove="folder-1485.png" />
     <None Remove="Gear-01.png" />
     <None Remove="germany.png" />
+    <None Remove="Icon-round-Question_mark.png" />
     <None Remove="round-information-icon.png" />
     <None Remove="uk.png" />
   </ItemGroup>
@@ -29,6 +30,7 @@
     <Resource Include="folder-1485.png" />
     <Resource Include="Gear-01.png" />
     <Resource Include="germany.png" />
+    <Resource Include="Icon-round-Question_mark.png" />
     <Resource Include="round-information-icon.png" />
     <Resource Include="uk.png" />
   </ItemGroup>

@@ -101,7 +101,7 @@ namespace EasyWordWPF_US5.Models
                 MessageBox.Show("ein fehler ist aufgetreten" + ex);
             }
         }
-        public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filename, bool Userdefined)
+        public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename)
         {
             // Get the AppData path and create a new subfolder for the application
             string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
@@ -109,34 +109,85 @@ namespace EasyWordWPF_US5.Models
 
             // Generate the filename
             string date = DateTime.Now.ToString("yyyy-MM-dd");
-            string generatedFilename = string.IsNullOrWhiteSpace(filename) ? date : filename;
+            string generatedFilename = string.IsNullOrWhiteSpace(filepath) ? date : filename;
 
             // Initialize fullPath to the inherited JSON path if Userdefined is false
-            string fullPath = !Userdefined && comboboxValue.Equals("JSON", StringComparison.OrdinalIgnoreCase)
-                ? Path.Combine(appDataPath, "default.json") // Example JSON path
-                : string.Empty;
+            string fullPath = string.Empty;
+
+            // Precompute the path before entering the switch
+            if (Userdefined && !string.IsNullOrWhiteSpace(filepath))
+            {
+                fullPath = Path.Combine(filepath, $"{generatedFilename}.json");
+            }
+            else if (comboboxValue.Equals("JSON", StringComparison.OrdinalIgnoreCase))
+            {
+                fullPath = Path.Combine(appDataPath, $"{generatedFilename}.json");
+            }
+            else
+            {
+                fullPath = Path.Combine(appDataPath, $"{generatedFilename}.{comboboxValue.ToLower()}");
+            }
 
             switch (comboboxValue)
             {
                 case "JSON":
                     {
-                        // If Userdefined is true, allow setting a new path
                         if (Userdefined)
                         {
                             fullPath = Path.Combine(appDataPath, $"{generatedFilename}.json");
                         }
                         else
                         {
-                            // Inherit default JSON path
-                            fullPath = Path.Combine(appDataPath, "default.json");
+                            // Default JSON path
+                            fullPath = Path.Combine(appDataPath,  $"{generatedFilename}.json");
                         }
 
-                        // Save JSON content (example)
-                        string jsonContent = $"{{ \"German\": \"{word}\", \"eng\": \"{word2}\", \"one\": {one}, \"two\": {two} }}";
+                        // Create a new JSON object for the current entry
+                        var newEntry = new
+                        {
+                            German = word,
+                            English = word2,
+                            CorrectCount = one,
+                            IncorrectCount = two
+                        };
+
+                        // Prepare to handle the JSON file
+                        List<object> entries;
+
+                        if (File.Exists(fullPath))
+                        {
+                            // Read the existing JSON file content
+                            string existingJson = File.ReadAllText(fullPath);
+
+                            try
+                            {
+                                // Try to parse as an array
+                                entries = JsonConvert.DeserializeObject<List<object>>(existingJson) ?? new List<object>();
+                            }
+                            catch (JsonSerializationException)
+                            {
+                                // If parsing fails, treat the file as a single object
+                                var singleEntry = JsonConvert.DeserializeObject<object>(existingJson);
+                                entries = new List<object> { singleEntry };
+                            }
+                        }
+                        else
+                        {
+                            // If the file doesn't exist, start with a new list
+                            entries = new List<object>();
+                        }
+
+                        // Add the new entry to the list
+                        entries.Add(newEntry);
+
+                        // Serialize the updated list to JSON
+                        string jsonContent = JsonConvert.SerializeObject(entries, Formatting.Indented);
+
+                        // Write the updated JSON back to the file
                         File.WriteAllText(fullPath, jsonContent);
 
-                        //MessageBox.Show($"JSON data saved under {fullPath}");
                         break;
+
                     }
                 case "CSV":
                     {
@@ -147,7 +198,6 @@ namespace EasyWordWPF_US5.Models
                         string csvContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
                         File.AppendAllText(fullPath, csvContent);
 
-                        //MessageBox.Show($"CSV data saved under {fullPath}");
                         break;
                     }
                 case "TXT":
@@ -159,7 +209,6 @@ namespace EasyWordWPF_US5.Models
                         string txtContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
                         File.AppendAllText(fullPath, txtContent);
 
-                        //MessageBox.Show($"TXT data saved under {fullPath}");
                         break;
                     }
                 default:
@@ -168,6 +217,11 @@ namespace EasyWordWPF_US5.Models
                         break;
                     }
             }
+        }
+
+        internal void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filename, bool Userdefined)
+        {
+            throw new NotImplementedException();
         }
     }
 }
