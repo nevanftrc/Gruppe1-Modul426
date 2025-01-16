@@ -241,9 +241,15 @@ namespace EasyWordWPF_US5
                 currentWordIndex = random.Next(wordList.Count);
                 var currentWord = wordList[currentWordIndex];
 
+                // Abrufen der Statistik des aktuellen Wortes
+                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
+
+
                 string question = isGermanToEnglish
-                    ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?"
-                    : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?";
+                    ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?" +
+                      $"Richtig beantwortet:{stats.CorrectCount} / Falsch beantwortet:{stats.IncorrectCount}"
+                    : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?" +
+                      $"Richtig beantwortetes Wort:{stats.CorrectCount} / Falsch beantwortetes Wort:{stats.IncorrectCount}";
 
                 string input = Microsoft.VisualBasic.Interaction.InputBox(question, "Wortquiz", "");
 
@@ -261,19 +267,18 @@ namespace EasyWordWPF_US5
                 {
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
                     wordList.RemoveAt(currentWordIndex);
+                    stats.CorrectCount++;
                 }
                 else
                 {
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
                     incorrectWords.Add(currentWord);
+                    stats.IncorrectCount++;
                 }
 
-                // Speichert Statistiken nach jeder Antwort
-                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
-                if (isCorrect) stats.CorrectCount++;
-                else stats.IncorrectCount++;
                 statisticsService.SaveStatistics();
+
             }
         }
 
