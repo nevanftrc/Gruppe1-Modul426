@@ -268,6 +268,12 @@ namespace EasyWordWPF_US5
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
                     incorrectWords.Add(currentWord);
                 }
+
+                // Speichert Statistiken nach jeder Antwort
+                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
+                if (isCorrect) stats.CorrectCount++;
+                else stats.IncorrectCount++;
+                statisticsService.SaveStatistics();
             }
         }
 
