@@ -241,15 +241,9 @@ namespace EasyWordWPF_US5
                 currentWordIndex = random.Next(wordList.Count);
                 var currentWord = wordList[currentWordIndex];
 
-                // Abrufen der Statistik des aktuellen Wortes
-                var stats = statisticsService.GetOrCreateStatistics(currentWord.Item1, currentWord.Item2);
-
-
                 string question = isGermanToEnglish
-                    ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?" +
-                      $"Richtig beantwortet:{stats.CorrectCount} / Falsch beantwortet:{stats.IncorrectCount}"
-                    : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?" +
-                      $"Richtig beantwortetes Wort:{stats.CorrectCount} / Falsch beantwortetes Wort:{stats.IncorrectCount}";
+                    ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?"
+                    : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?";
 
                 string input = Microsoft.VisualBasic.Interaction.InputBox(question, "Wortquiz", "");
 
@@ -267,18 +261,13 @@ namespace EasyWordWPF_US5
                 {
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
                     wordList.RemoveAt(currentWordIndex);
-                    stats.CorrectCount++;
                 }
                 else
                 {
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
                     incorrectWords.Add(currentWord);
-                    stats.IncorrectCount++;
                 }
-
-                statisticsService.SaveStatistics();
-
             }
         }
 
@@ -398,7 +387,7 @@ namespace EasyWordWPF_US5
                 // If the file does not exist, inform the user and stop processing
                 if (!System.IO.File.Exists(loaderFilePath))
                 {
-                    MessageBox.Show("Statistics file not found in AppData.");
+                    MessageBox.Show("Statistics file nicht gefunden in AppData.");
                     return;
                 }
 
@@ -409,6 +398,7 @@ namespace EasyWordWPF_US5
                 // Extract only the inner objects (skip the outer key)
                 if (jsonObject != null)
                 {
+                    string lastExportPath = string.Empty;
                     foreach (var innerValue in jsonObject.Values)
                     {
                         // Extract the relevant fields from the inner JSON object
@@ -429,7 +419,7 @@ namespace EasyWordWPF_US5
                             // Otherwise, use the default appDataPath
                             exportFilePath = Path.Combine(appDataPath, $"{filename}.{exportClass.dataextension.ToLower()}");
                         }
-
+                        lastExportPath = exportFilePath;
                         // Call the export method with the extracted data
                         exportClass.exporterMethod(
                             word: germanWord,
@@ -443,16 +433,16 @@ namespace EasyWordWPF_US5
                         );
                     }
 
-                    MessageBox.Show($"{exportClass.dataextension} data saved successfully under {appDataPath}");
+                    MessageBox.Show($"{exportClass.dataextension} daten wurden erfolgreich gespeichert unter {lastExportPath}");
                 }
                 else
                 {
-                    MessageBox.Show("No data found in the statistics file.");
+                    MessageBox.Show("Keine daten wurden gefunden unter statistics file.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 

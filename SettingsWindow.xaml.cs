@@ -37,15 +37,13 @@ namespace EasyWordWPF_US5
             // export settings :)
             exportClass = new ExportClass();
             //path display
-            userdefinedpathbox.Text = !string.IsNullOrWhiteSpace(exportClass.UserPath ?? string.Empty)
-            ? exportClass.UserPath
-            : "Kein Pfad Vorhanden";
+            LoadUserDefinedPath();
 
             // checker
             exportpathcheck.IsChecked = false;
 
             DataContext = exportClass;
-
+            //combobox
             LoadComboBoxFromSettings();
 
         }
@@ -57,8 +55,6 @@ namespace EasyWordWPF_US5
             mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
             ComboBoxItem selectedItem = dataextension.SelectedItem as ComboBoxItem;
             string selectedContent = selectedItem?.Content?.ToString() ?? string.Empty;
-
-
 
             if (exportpathcheck.IsChecked == true)
             {
@@ -105,6 +101,23 @@ namespace EasyWordWPF_US5
                 exportpathcheck.IsChecked = true;
             }
         }
+        //text box
+        private void LoadUserDefinedPath()
+        {
+            exportClass.ReadSettings();
+
+            if (exportClass != null)
+            {
+                userdefinedpathbox.Text = !string.IsNullOrWhiteSpace(exportClass.UserPath)
+                    ? exportClass.UserPath
+                    : "Kein Pfad Vorhanden";
+
+                // Reset the checkbox state
+                exportpathcheck.IsChecked = false;
+            }
+        }
+
+
         public void LoadComboBoxFromSettings()
         {
             // Read the value from the JSON

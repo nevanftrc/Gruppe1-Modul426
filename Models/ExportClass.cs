@@ -81,7 +81,7 @@ namespace EasyWordWPF_US5.Models
             {
                 if (!File.Exists(appSettingsFilePath))
                 {
-                    Console.WriteLine($"Settings file not found at {appSettingsFilePath}. Creating default settings.");
+                    Console.WriteLine($"Settings file wurde nicht gefunden unter {appSettingsFilePath}. Es wird neu geschrieben..");
                     EnsureAppSettings();
                 }
 
@@ -109,39 +109,22 @@ namespace EasyWordWPF_US5.Models
 
             // Generate the filename
             string date = DateTime.Now.ToString("yyyy-MM-dd");
-            string generatedFilename = string.IsNullOrWhiteSpace(filepath) ? date : filename;
+            string generatedFilename = string.IsNullOrWhiteSpace(filename) ? date : filename;
 
-            // Initialize fullPath to the inherited JSON path if Userdefined is false
-            string fullPath = string.Empty;
+            // Determine the correct save path
+            string savePath = (!string.IsNullOrWhiteSpace(filepath) && filepath != "Kein Pfad Vorhanden")
+             ? filepath // Use the defined filepath if it's valid
+             : appDataPath;
 
-            // Precompute the path before entering the switch
-            if (Userdefined && !string.IsNullOrWhiteSpace(filepath))
-            {
-                fullPath = Path.Combine(filepath, $"{generatedFilename}.json");
-            }
-            else if (comboboxValue.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-            {
-                fullPath = Path.Combine(appDataPath, $"{generatedFilename}.json");
-            }
-            else
-            {
-                fullPath = Path.Combine(appDataPath, $"{generatedFilename}.{comboboxValue.ToLower()}");
-            }
+            // Determine the full file path with the correct extension
+            string fullPath = Path.HasExtension(savePath)
+            ? savePath // If filepath already contains a full file path, use it directly
+            : Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
 
             switch (comboboxValue)
             {
                 case "JSON":
                     {
-                        if (Userdefined)
-                        {
-                            fullPath = Path.Combine(appDataPath, $"{generatedFilename}.json");
-                        }
-                        else
-                        {
-                            // Default JSON path
-                            fullPath = Path.Combine(appDataPath,  $"{generatedFilename}.json");
-                        }
-
                         // Create a new JSON object for the current entry
                         var newEntry = new
                         {
@@ -187,41 +170,27 @@ namespace EasyWordWPF_US5.Models
                         File.WriteAllText(fullPath, jsonContent);
 
                         break;
-
                     }
                 case "CSV":
                     {
-                        // Create the file path with .csv extension
-                        fullPath = Path.Combine(appDataPath, $"{generatedFilename}.csv");
-
                         // Write data in CSV format
                         string csvContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
                         File.AppendAllText(fullPath, csvContent);
-
                         break;
                     }
                 case "TXT":
                     {
-                        // Create the file path with .txt extension
-                        fullPath = Path.Combine(appDataPath, $"{generatedFilename}.txt");
-
                         // Write data in TXT format
                         string txtContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
                         File.AppendAllText(fullPath, txtContent);
-
                         break;
                     }
                 default:
                     {
-                        MessageBox.Show("No value was found.");
+                        MessageBox.Show("Kein Wert wurde gefunden.");
                         break;
                     }
             }
-        }
-
-        internal void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filename, bool Userdefined)
-        {
-            throw new NotImplementedException();
         }
     }
 }
