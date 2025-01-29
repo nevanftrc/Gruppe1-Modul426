@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EasyWordWPF_US5.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EasyWord - Wortquiz" Height="284" Width="632" WindowStartupLocation="CenterScreen" Icon="/book.png">
+        Title="EasyWord - Wortquiz" Height="284" Width="632" WindowStartupLocation="CenterScreen" Icon="/book.png" >
     <Grid>
         <!--bucket gui-->
         <Grid Margin="0,40,80,62" HorizontalAlignment="Right" Width="129">

@@ -59,30 +59,8 @@ namespace EasyWordWPF_US5.Models
                 Buckets = BucketCount
             };
 
-            SaveSettings(BucketCount);
-        }
-        public void SaveSettings(int count)
-        {
-            try
-            {
-                var settings = new
-                {
-                    DefaultPath = this.DefaultPath,
-                    UserPath = this.UserPath,
-                    UseDefault = this.UseDefault,
-                    dataextension = this.dataextension,
-                    Buckets = count
-                };
-
-                string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
-                File.WriteAllText(appSettingsFilePath, json);
-
-                Debug.WriteLine("Settings successfully saved.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler beim Speichern der Einstellungen: " + ex.Message);
-            }
+            string json = JsonConvert.SerializeObject(updatedSettings, Formatting.Indented);
+            File.WriteAllText(appSettingsFilePath, json);
         }
 
         public void EnsureAppSettings()

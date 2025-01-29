@@ -114,6 +114,7 @@ namespace EasyWordWPF_US5
             //Initialize json
             exportClass = new ExportClass();
             exportClass.EnsureAppSettings();
+            this.Closing += MainWindow_Closing;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -492,6 +493,16 @@ namespace EasyWordWPF_US5
                                 "Erfolg",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Information);
+            }
+        }
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var result = MessageBox.Show("Wollen sie die app Beenden?", "Exit", MessageBoxButton.YesNo);
+            Application.Current.Shutdown();
+
+            if (result == MessageBoxResult.No)
+            {
+                e.Cancel = true; // Prevent the window from closing
             }
         }
 
