@@ -15,7 +15,7 @@
                 </Grid.RowDefinitions>
 
                 <Button x:Name="addbtn" Content="^" Grid.Row="1" MaxWidth="30" Click="bucketAdd" MaxHeight="30"/>
-                <Label x:Name="numtxtbo" Content="0" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
+                <Label x:Name="numtxtbo" Content="3" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
                 <Button x:Name="subbtn" Content="v" Grid.Row="3" MaxWidth="30" MaxHeight="30" Click="bucketRem"/>
             </Grid>
         </Grid>

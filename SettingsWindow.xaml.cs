@@ -55,16 +55,22 @@ namespace EasyWordWPF_US5
             mainWindow.isCaseSensitive = !(CheckGrammar.IsChecked ?? true); // Wenn angekreuzt, ignoriert es die Groß-/Kleinschreibung
             ComboBoxItem selectedItem = dataextension.SelectedItem as ComboBoxItem;
             string selectedContent = selectedItem?.Content?.ToString() ?? string.Empty;
+            int bucketcount = 0;
+            if (int.TryParse(mainWindow.numtxtbo.Content?.ToString(), out int parsedValue))
+            {
+                bucketcount = parsedValue;
+            }
+
 
             if (exportpathcheck.IsChecked == true)
             {
                 // When checked, apply the user-defined path
-                exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent);
+                exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent, bucketcount);
             }
             else
             {
                 // If unchecked, reset to the default or empty path
-                exportClass.UpdateSettings(true, string.Empty, selectedContent);
+                exportClass.UpdateSettings(true, string.Empty, selectedContent, bucketcount);
             }
 
 
@@ -144,5 +150,14 @@ namespace EasyWordWPF_US5
             dataextension.SelectedIndex = 0; // Optional: set to first item if no match
         }
 
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            HelpBox.Visibility = Visibility.Visible;
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            HelpBox.Visibility = Visibility.Hidden;
+        }
     }
 }

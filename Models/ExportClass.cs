@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using EasyWordWPF;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,8 +22,10 @@ namespace EasyWordWPF_US5.Models
         public string UserPath { get; set; }
         public bool UseDefault { get; set; }
         public string dataextension { get; set; }
+        public int Buckets { get; set; }
 
         private readonly string appSettingsFilePath;
+        private Buckets _bucket;
 
         public SettingsWindow settingsWindow { get; set; }
         public List<string> ExtensionsList { get; set; }
@@ -36,12 +40,12 @@ namespace EasyWordWPF_US5.Models
             appSettingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             UserPath = string.Empty;
             UseDefault = true;
-            dataextension = "JSON";
+            dataextension = "JSON"; 
             // Initialize available extensions
             ExtensionsList = new List<string> { "JSON", "CSV", "TXT" };
         }
 
-        public void UpdateSettings(bool useDefault, string userPath, string extension)
+        public void UpdateSettings(bool useDefault, string userPath, string extension, int BucketCount)
         {
             UseDefault = useDefault;
             UserPath = userPath.Replace('\\', '/'); // Normalize path for Linux/Windows compatibility
@@ -51,11 +55,34 @@ namespace EasyWordWPF_US5.Models
                 DefaultPath = DefaultPath,
                 UserPath = UserPath,
                 UseDefault = UseDefault,
-                DataExtension = extension
+                DataExtension = extension,
+                Buckets = BucketCount
             };
 
-            string json = JsonConvert.SerializeObject(updatedSettings, Formatting.Indented);
-            File.WriteAllText(appSettingsFilePath, json);
+            SaveSettings(BucketCount);
+        }
+        public void SaveSettings(int count)
+        {
+            try
+            {
+                var settings = new
+                {
+                    DefaultPath = this.DefaultPath,
+                    UserPath = this.UserPath,
+                    UseDefault = this.UseDefault,
+                    dataextension = this.dataextension,
+                    Buckets = count
+                };
+
+                string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+                File.WriteAllText(appSettingsFilePath, json);
+
+                Debug.WriteLine("Settings successfully saved.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler beim Speichern der Einstellungen: " + ex.Message);
+            }
         }
 
         public void EnsureAppSettings()
@@ -67,7 +94,8 @@ namespace EasyWordWPF_US5.Models
                     DefaultPath = DefaultPath,
                     UserPath = UserPath,
                     UseDefault = UseDefault,
-                    DataExtension = dataextension
+                    DataExtension = dataextension,
+                    Buckets = 3
                 };
 
                 string json = JsonConvert.SerializeObject(defaultSettings, Formatting.Indented);
@@ -94,6 +122,7 @@ namespace EasyWordWPF_US5.Models
                     UserPath = settings.UserPath ?? string.Empty; // Null-safe assignment
                     UseDefault = settings.UseDefault;
                     dataextension = settings.dataextension;
+                    Buckets = settings.Buckets;
                 }
             }
             catch (Exception ex)

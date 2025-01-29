@@ -1,19 +1,18 @@
-﻿using EasyWordWPF_US5.Models;
+﻿using EasyWordWPF_US5;
+using EasyWordWPF_US5.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 namespace EasyWordWPF
 {
     public class Buckets
     {
+        public MainWindow Menu { get; set; }
         public int bucket_count => buckets.Count; // Number of buckets
         public List<List<CSVlist>> buckets { get; private set; } // Buckets storing words
 
-
-
-        public Buckets(int initialBucketCount = 5) // Default count
+        public Buckets(int initialBucketCount = 3) // Default count
         {
             buckets = new List<List<CSVlist>>();
             for (int i = 0; i < initialBucketCount; i++)

@@ -10,6 +10,7 @@ using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using static System.Net.WebRequestMethods;
+using static EasyWordWPF_US5.Models.DataStorage;
 
 namespace EasyWordWPF_US5
 {
@@ -113,10 +114,7 @@ namespace EasyWordWPF_US5
             //Initialize json
             exportClass = new ExportClass();
             exportClass.EnsureAppSettings();
-
-
         }
-
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -296,13 +294,23 @@ namespace EasyWordWPF_US5
         }
         private void UpdateBucketCountLabel()
         {
-            numtxtbo.Content = myBucket.bucket_count.ToString();
+            numtxtbo.Content = myBucket.bucket_count.ToString(); 
         }
+
+        public int GetBucketCount()
+        {
+            int value;
+            value = Convert.ToInt32(numtxtbo.Content);
+
+            return value;
+        }
+
         private void bucketAdd(object sender, RoutedEventArgs e)
         {
             try
             {
                 myBucket.bucket_add(1); // Add one bucket
+            
                 UpdateBucketCountLabel();
             }
             catch (Exception ex)
