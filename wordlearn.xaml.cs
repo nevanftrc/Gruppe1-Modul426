@@ -90,7 +90,7 @@ namespace EasyWordWPF
                 // Move to the next bucket if correct
                 if (currentBucket < myBucket.bucket_count - 1)
                 {
-                    myBucket.MoveWord(currentWord, currentBucket, currentBucket + 1);
+                    myBucket.MoveWord(currentWord, currentBucket, 1,0);
                 }
 
                 incorrectList.RemoveFromIncorrect(currentWord); // Remove from incorrect list
@@ -106,7 +106,7 @@ namespace EasyWordWPF
                 // Move to the previous bucket if incorrect
                 if (currentBucket > 0)
                 {
-                    myBucket.MoveWord(currentWord, currentBucket, currentBucket - 1);
+                    myBucket.MoveWord(currentWord, currentBucket, 0,1);
                 }
 
                 incorrectList.AddToIncorrect(currentWord); // Add to incorrect list

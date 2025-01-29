@@ -18,7 +18,8 @@ using System.Windows.Shapes;
 namespace EasyWordWPF_US5
 {
     /// <summary>
-    /// Interaction logic for SettingsWindow.xaml
+    /// Settings window
+    /// </summary>
     public partial class SettingsWindow : Window
     {
         private MainWindow mainWindow;
@@ -41,6 +42,10 @@ namespace EasyWordWPF_US5
 
             // checker
             exportpathcheck.IsChecked = false;
+
+            //checker eimer
+
+            UserDefinedBucket.IsChecked = false;
 
             DataContext = exportClass;
             //combobox
@@ -65,12 +70,26 @@ namespace EasyWordWPF_US5
             if (exportpathcheck.IsChecked == true)
             {
                 // When checked, apply the user-defined path
-                exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent, bucketcount);
+                if (UserDefinedBucket.IsChecked == false)
+                {
+                    exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent, bucketcount, false);
+                }
+                else 
+                {
+                    exportClass.UpdateSettings(false, userdefinedpathbox.Text, selectedContent, bucketcount, true);
+                }
             }
             else
             {
-                // If unchecked, reset to the default or empty path
-                exportClass.UpdateSettings(true, string.Empty, selectedContent, bucketcount);
+                if (UserDefinedBucket.IsChecked == false)
+                {
+                    // If unchecked, reset to the default or empty path
+                    exportClass.UpdateSettings(true, string.Empty, selectedContent, bucketcount, false);
+                }
+                else 
+                {
+                    exportClass.UpdateSettings(true, string.Empty, selectedContent, bucketcount, true);
+                }
             }
 
 
@@ -105,6 +124,18 @@ namespace EasyWordWPF_US5
             else
             {
                 exportpathcheck.IsChecked = true;
+            }
+        }
+        //checkbox eimer
+        public void checkcheckboxeimer(bool item)
+        {
+            if (item == false)
+            {
+                UserDefinedBucket.IsChecked = false;
+            }
+            else
+            {
+                UserDefinedBucket.IsChecked = true;
             }
         }
         //text box

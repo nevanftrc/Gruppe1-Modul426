@@ -12,6 +12,9 @@ using System.Windows.Controls;
 
 namespace EasyWordWPF_US5.Models
 {
+    /// <summary>
+    /// Diese Klasse wird verwendet fürs exportieren und das schreiben für System einstellungen
+    /// </summary>
     public class ExportClass
     {
         public string Germanword { get; set; }
@@ -22,6 +25,7 @@ namespace EasyWordWPF_US5.Models
         public string UserPath { get; set; }
         public bool UseDefault { get; set; }
         public string dataextension { get; set; }
+        public bool UserBucketCount { get; set; }
         public int Buckets { get; set; }
 
         private readonly string appSettingsFilePath;
@@ -44,8 +48,15 @@ namespace EasyWordWPF_US5.Models
             // Initialize available extensions
             ExtensionsList = new List<string> { "JSON", "CSV", "TXT" };
         }
-
-        public void UpdateSettings(bool useDefault, string userPath, string extension, int BucketCount)
+        /// <summary>
+        /// Diese Methode Updatet die werte für appsettings JSON
+        /// </summary>
+        /// <param name="useDefault">Der Default Pfad bool</param>
+        /// <param name="userPath">Benutzerdefnierter Pfad</param>
+        /// <param name="extension">Datentyp</param>
+        /// <param name="BucketCount">Anzahl einmer</param>
+        /// <param name="bucket">Bool ob man nicht standart will</param>
+        public void UpdateSettings(bool useDefault, string userPath, string extension, int BucketCount, bool bucket)
         {
             UseDefault = useDefault;
             UserPath = userPath.Replace('\\', '/'); // Normalize path for Linux/Windows compatibility
@@ -56,13 +67,16 @@ namespace EasyWordWPF_US5.Models
                 UserPath = UserPath,
                 UseDefault = UseDefault,
                 DataExtension = extension,
+                UserBucketCount = bucket,
                 Buckets = BucketCount
             };
 
             string json = JsonConvert.SerializeObject(updatedSettings, Formatting.Indented);
             File.WriteAllText(appSettingsFilePath, json);
         }
-
+        /// <summary>
+        /// Der standart von appsettings werte
+        /// </summary>
         public void EnsureAppSettings()
         {
             if (!File.Exists(appSettingsFilePath))
@@ -73,6 +87,7 @@ namespace EasyWordWPF_US5.Models
                     UserPath = UserPath,
                     UseDefault = UseDefault,
                     DataExtension = dataextension,
+                    UserBucketCount = false,
                     Buckets = 3
                 };
 
@@ -80,14 +95,16 @@ namespace EasyWordWPF_US5.Models
                 File.WriteAllText(appSettingsFilePath, json);
             }
         }
-
+        /// <summary>
+        /// List die werte von appsettings.json
+        /// </summary>
         public void ReadSettings()
         {
             try
             {
                 if (!File.Exists(appSettingsFilePath))
                 {
-                    Console.WriteLine($"Settings file wurde nicht gefunden unter {appSettingsFilePath}. Es wird neu geschrieben..");
+                    Debug.WriteLine($"Settings file wurde nicht gefunden unter {appSettingsFilePath}. Es wird neu geschrieben..");
                     EnsureAppSettings();
                 }
 
@@ -100,6 +117,7 @@ namespace EasyWordWPF_US5.Models
                     UserPath = settings.UserPath ?? string.Empty; // Null-safe assignment
                     UseDefault = settings.UseDefault;
                     dataextension = settings.dataextension;
+                    UserBucketCount = settings.UserBucketCount;
                     Buckets = settings.Buckets;
                 }
             }
@@ -108,6 +126,17 @@ namespace EasyWordWPF_US5.Models
                 MessageBox.Show("ein fehler ist aufgetreten" + ex);
             }
         }
+        /// <summary>
+        /// Exportiert die daten in drei verschiedne typen (json,csv und txt)
+        /// </summary>
+        /// <param name="word">Deutsch</param>
+        /// <param name="word2">Englisch</param>
+        /// <param name="one">Korrekt</param>
+        /// <param name="two">Falsch</param>
+        /// <param name="comboboxValue">datentype</param>
+        /// <param name="filepath">Der pfad</param>
+        /// <param name="Userdefined">Wenn falsch wird es angepasst zu filepath</param>
+        /// <param name="filename">den namen</param>
         public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename)
         {
             // Get the AppData path and create a new subfolder for the application

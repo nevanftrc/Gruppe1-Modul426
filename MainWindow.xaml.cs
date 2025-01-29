@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -114,9 +115,11 @@ namespace EasyWordWPF_US5
             //Initialize json
             exportClass = new ExportClass();
             exportClass.EnsureAppSettings();
+            exportClass.ReadSettings();
+            SetBucketCountLabel();
             this.Closing += MainWindow_Closing;
-        }
 
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadUserData();
@@ -293,19 +296,32 @@ namespace EasyWordWPF_US5
         {
             Application.Current.Shutdown();
         }
+        /// <summary>
+        /// passt die anzahl an
+        /// </summary>
         private void UpdateBucketCountLabel()
-        {
-            numtxtbo.Content = myBucket.bucket_count.ToString(); 
+        { 
+            numtxtbo.Content = myBucket.bucket_count.ToString();
         }
-
-        public int GetBucketCount()
+        /// <summary>
+        /// applies die nummer
+        /// </summary>
+        private void SetBucketCountLabel()
         {
-            int value;
-            value = Convert.ToInt32(numtxtbo.Content);
+            exportClass.ReadSettings(); // Load latest settings
 
-            return value;
+            int savedBucketCount = exportClass.Buckets; // Get bucket count from JSON
+
+            // Ensure UI updates correctly
+            numtxtbo.Content = exportClass.UserBucketCount ? savedBucketCount.ToString() : "3";
+
+            Debug.WriteLine($"[DEBUG] Loaded Bucket Count: {savedBucketCount}, UseDefault: {exportClass.UseDefault}");
         }
-
+        /// <summary>
+        /// addiert eimer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void bucketAdd(object sender, RoutedEventArgs e)
         {
             try
@@ -321,6 +337,11 @@ namespace EasyWordWPF_US5
         }
 
         // Event handler for removing a bucket
+        /// <summary>
+        /// entfernt eimer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void bucketRem(object sender, RoutedEventArgs e)
         {
             try
@@ -373,6 +394,7 @@ namespace EasyWordWPF_US5
             settingsWindow.Show();
             exportClass.ReadSettings();
             settingsWindow.checkcheckboxsettings(exportClass.UseDefault);
+            settingsWindow.checkcheckboxeimer(exportClass.UserBucketCount);
 
         }
 
@@ -495,9 +517,14 @@ namespace EasyWordWPF_US5
                                 MessageBoxImage.Information);
             }
         }
+        /// <summary>
+        /// benendet die anwendung
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var result = MessageBox.Show("Wollen sie die app Beenden?", "Exit", MessageBoxButton.YesNo);
+            var result = MessageBox.Show("Wollen sie die App Beenden?", "Exit", MessageBoxButton.YesNo);
             Application.Current.Shutdown();
 
             if (result == MessageBoxResult.No)

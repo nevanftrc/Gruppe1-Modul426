@@ -1,8 +1,8 @@
 ﻿<Window x:Class="EasyWordWPF_US5.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SettingsWindow" Height="260" Width="295" Icon="/Gear-01.png">
-    <Grid>
+        Title="SettingsWindow" Height="337" Width="295" Icon="/Gear-01.png">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="20"/>
@@ -10,8 +10,10 @@
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="50"/>
                 <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <!-- Checkbox für Groß-/Kleinschreibung -->
             <CheckBox Grid.Row="1" x:Name="CheckGrammar" Content="Groß-/Kleinschreibung ignorieren" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,0,0"/>
@@ -34,7 +36,7 @@
         </Grid>
         <CheckBox Grid.Row="3" x:Name="exportpathcheck"  Content="Benütze Benutzerdefenierte Pfad" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Checked="ExportPathCheck_Checked" 
           Unchecked="ExportPathCheck_Unchecked"/>
-            <TextBox x:Name="userdefinedpathbox" Grid.Row="4" IsEnabled="False" HorizontalAlignment="Left" Margin="20,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="195"/>
+            <TextBox x:Name="userdefinedpathbox" Grid.Row="4" IsEnabled="False" HorizontalAlignment="Left" Margin="20,0,0,0" TextWrapping="Wrap" Text="Null" VerticalAlignment="Top" Width="195"/>
             <Label Grid.Row="5" Content="Datenendung" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top"/>
         <!--Für export-->
         <ComboBox x:Name="dataextension" Grid.Row="6" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="194" SelectedIndex="0">
@@ -42,18 +44,20 @@
             <ComboBoxItem Content="CSV" />
             <ComboBoxItem Content="TXT" />
         </ComboBox>
-        <StackPanel Orientation="Horizontal" Grid.Row="7">
+        <Label Content="Benutzer Defenierte Eimer Anzahl" Grid.Row="7"/>
+        <CheckBox x:Name="UserDefinedBucket" Content="Benutzerdefnierte Eimern" Grid.Row="8" Margin="20,0,0,0"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="9">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="105"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition MinWidth="55"/>
+                    <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
                 <!-- Button zum Anwenden der Änderungen -->
-                <Button Grid.Column="1" Content="Apply" Click="ApplyButton_Click" Height="20" VerticalAlignment="Top"/>
+                <Button Grid.Column="3" Content="Übernehmen" Click="ApplyButton_Click" Height="20" VerticalAlignment="Top"/>
                 <!-- Button zum Schließen des Fensters -->
-                <Button Content="Close" Grid.Column="3" VerticalAlignment="Top" Click="CloseButton_Click"/>
+                <Button Content="Schliessen" Grid.Column="1" VerticalAlignment="Top" Click="CloseButton_Click"/>
             </Grid>
         </StackPanel>
     </Grid>

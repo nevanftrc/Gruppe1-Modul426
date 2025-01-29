@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace EasyWordWPF_US5.Models
 {
+    /// <summary>
+    /// Diese Klasse gibt den standart von wörter und die liste
+    /// </summary>
     public class CSVlist
     {
         public string en_words { get; set; }

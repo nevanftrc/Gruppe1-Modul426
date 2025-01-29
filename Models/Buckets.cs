@@ -3,24 +3,36 @@ using EasyWordWPF_US5.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 namespace EasyWordWPF
 {
+    /// <summary>
+    /// Diese Klasse Behält die menge und den zufalls generator von wörter in der wort liste
+    /// </summary>
     public class Buckets
     {
         public MainWindow Menu { get; set; }
         public int bucket_count => buckets.Count; // Number of buckets
         public List<List<CSVlist>> buckets { get; private set; } // Buckets storing words
 
-        public Buckets(int initialBucketCount = 3) // Default count
+        public Buckets(int initialBucketCount = -1) // Use -1 as a flag
         {
             buckets = new List<List<CSVlist>>();
-            for (int i = 0; i < initialBucketCount; i++)
+
+            // Read saved bucket count from settings
+            ExportClass exportClass = new ExportClass();
+            exportClass.ReadSettings();
+
+            // If no valid value is provided, use the saved value or fallback to default (3)
+            int bucketCount = (initialBucketCount > 0) ? initialBucketCount : exportClass.Buckets;
+            if (bucketCount <= 0) bucketCount = 3; // Final fallback
+
+            for (int i = 0; i < bucketCount; i++)
             {
                 buckets.Add(new List<CSVlist>());
             }
         }
-
         // Fill the first bucket with words from a file
         public void fill_bucket(string filepath)
         {
@@ -39,9 +51,13 @@ namespace EasyWordWPF
         public CSVlist GetWeightedRandomWord()
         {
             int totalWeight = 0;
+            Dictionary<int, int> bucketWeights = new Dictionary<int, int>();
+
             for (int i = 0; i < buckets.Count; i++)
             {
-                totalWeight += buckets[i].Count * (buckets.Count - i); // Higher weight for leftmost buckets
+                int weight = (buckets.Count - i) * (buckets[i].Count + 1); // Higher weight for earlier buckets
+                bucketWeights[i] = weight;
+                totalWeight += weight;
             }
 
             if (totalWeight == 0)
@@ -53,34 +69,39 @@ namespace EasyWordWPF
 
             for (int i = 0; i < buckets.Count; i++)
             {
-                cumulativeWeight += buckets[i].Count * (buckets.Count - i);
+                cumulativeWeight += bucketWeights[i];
                 if (randomValue < cumulativeWeight && buckets[i].Count > 0)
                 {
-                    int index = random.Next(0, buckets[i].Count);
-                    return buckets[i][index];
+                    return buckets[i][random.Next(buckets[i].Count)];
                 }
             }
 
             return null; // Should never reach here
         }
 
-        // Move a word between buckets
-        public void MoveWord(CSVlist word, int sourceBucket, int targetBucket)
+        // Move a word between buckets based on mistakes
+        public void MoveWord(CSVlist word, int sourceBucket, int correctCount, int incorrectCount)
         {
-            if (sourceBucket < 0 || sourceBucket >= bucket_count || targetBucket < 0 || targetBucket >= bucket_count)
+            if (sourceBucket < 0 || sourceBucket >= bucket_count)
                 throw new ArgumentOutOfRangeException("Invalid bucket index.");
 
-            if (buckets[sourceBucket].Remove(word))
-            {
-                buckets[targetBucket].Add(word);
-            }
+            if (!buckets[sourceBucket].Remove(word))
+                return; // Word not found, exit
+
+            // Calculate movement using mistakes/correct answers
+            int movement = incorrectCount - correctCount;
+
+            // Negative movement moves the word forward, positive moves it back
+            int targetBucket = Math.Max(0, Math.Min(bucket_count - 1, sourceBucket - movement));
+
+            buckets[targetBucket].Add(word);
         }
 
         // Add buckets
         public void bucket_add(int count)
         {
             if (count <= 0)
-                throw new ArgumentException("Count must be greater than 0.");
+                throw new ArgumentException("Anzahl muss grösser als 0 sein.");
 
             for (int i = 0; i < count; i++)
             {
@@ -103,35 +124,6 @@ namespace EasyWordWPF
             }
         }
 
-        // Move words based on correct or incorrect
-        public void UpdateWordBucket(CSVlist word, bool isCorrect)
-        {
-            int currentBucket = -1;
-            for (int i = 0; i < bucket_count; i++)
-            {
-                if (buckets[i].Contains(word))
-                {
-                    currentBucket = i;
-                    break;
-                }
-            }
-
-            if (currentBucket == -1)
-                throw new Exception("Word not found in any bucket.");
-
-            if (isCorrect)
-            {
-                word.CorrectCount++;
-                int targetBucket = Math.Min(currentBucket + 1, bucket_count - 1); // Move to the next bucket (max is the last bucket)
-                MoveWord(word, currentBucket, targetBucket);
-            }
-            else
-            {
-                word.IncorrectCount++;
-                MoveWord(word, currentBucket, 0); // Move to the first bucket if incorrect
-            }
-        }
-
         // Save the buckets to JSON
         public void SaveBucketsToJson()
         {
@@ -145,7 +137,7 @@ namespace EasyWordWPF
             File.WriteAllText(filePath, jsonData);
 
             // Optional: Inform the user that the file was saved
-            Console.WriteLine($"Buckets data saved to: {filePath}");
+            Debug.WriteLine($"Buckets data saved to: {filePath}");
         }
 
 
