@@ -263,6 +263,8 @@ namespace EasyWordWPF_US5
                 {
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
                     UpdateStatistics(currentWord.German, currentWord.English, true);
+                    CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
+                    myBucket.MoveWord(wordObject, 1, 0);
                     wordList.RemoveAt(currentWordIndex);
                 }
                 else
@@ -270,7 +272,8 @@ namespace EasyWordWPF_US5
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
                     UpdateStatistics(currentWord.German, currentWord.English, false);
-
+                    CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
+                    myBucket.MoveWord(wordObject, 0, 1);
                     incorrectWords.Add(currentWord);
                 }
             }
