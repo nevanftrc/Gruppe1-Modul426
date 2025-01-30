@@ -14,8 +14,9 @@ namespace EasyWordWPF_US5.Models
 {
     /// <summary>
     /// Diese Klasse wird verwendet fürs exportieren und das schreiben für System einstellungen
+    /// Und das Importieren der daten
     /// </summary>
-    public class ExportClass
+    public class ExportandImportClass
     {
         public string Germanword { get; set; }
         public string Englishword { get; set; }
@@ -34,7 +35,7 @@ namespace EasyWordWPF_US5.Models
         public SettingsWindow settingsWindow { get; set; }
         public List<string> ExtensionsList { get; set; }
 
-        public ExportClass()
+        public ExportandImportClass()
         {
             Germanword = string.Empty;
             Englishword = string.Empty;
@@ -44,7 +45,7 @@ namespace EasyWordWPF_US5.Models
             appSettingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             UserPath = string.Empty;
             UseDefault = true;
-            dataextension = "JSON"; 
+            dataextension = "JSON";
             // Initialize available extensions
             ExtensionsList = new List<string> { "JSON", "CSV", "TXT" };
         }
@@ -88,7 +89,7 @@ namespace EasyWordWPF_US5.Models
                     UseDefault = UseDefault,
                     DataExtension = dataextension,
                     UserBucketCount = false,
-                    Buckets = 3
+                    Buckets = 5
                 };
 
                 string json = JsonConvert.SerializeObject(defaultSettings, Formatting.Indented);
@@ -109,7 +110,7 @@ namespace EasyWordWPF_US5.Models
                 }
 
                 var json = File.ReadAllText(appSettingsFilePath);
-                var settings = JsonConvert.DeserializeObject<ExportClass>(json);
+                var settings = JsonConvert.DeserializeObject<ExportandImportClass>(json);
 
                 if (settings != null)
                 {
@@ -137,7 +138,7 @@ namespace EasyWordWPF_US5.Models
         /// <param name="filepath">Der pfad</param>
         /// <param name="Userdefined">Wenn falsch wird es angepasst zu filepath</param>
         /// <param name="filename">den namen</param>
-        public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename)
+        public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish)
         {
             // Get the AppData path and create a new subfolder for the application
             string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
@@ -149,76 +150,76 @@ namespace EasyWordWPF_US5.Models
 
             // Determine the correct save path
             string savePath = (!string.IsNullOrWhiteSpace(filepath) && filepath != "Kein Pfad Vorhanden")
-             ? filepath // Use the defined filepath if it's valid
-             : appDataPath;
+                ? filepath // Use the defined filepath if it's valid
+                : appDataPath;
 
             // Determine the full file path with the correct extension
             string fullPath = Path.HasExtension(savePath)
-            ? savePath // If filepath already contains a full file path, use it directly
-            : Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
+                ? savePath // If filepath already contains a full file path, use it directly
+                : Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
+
+            // Define correct labels based on quiz mode
+            string firstLabel = isGermanToEnglish ? "German" : "English";
+            string secondLabel = isGermanToEnglish ? "English" : "German";
+
+            if (!isGermanToEnglish)
+            {
+                (word, word2) = (word2, word); // Swap words for English-to-German mode
+            }
 
             switch (comboboxValue)
             {
                 case "JSON":
                     {
-                        // Create a new JSON object for the current entry
-                        var newEntry = new
-                        {
-                            German = word,
-                            English = word2,
-                            CorrectCount = one,
-                            IncorrectCount = two
-                        };
+                        // Create a new JSON object for the current entry with dynamic labels
+                        var newEntry = new Dictionary<string, object>
+                {
+                    { firstLabel, word },
+                    { secondLabel, word2 },
+                    { "CorrectCount", one },
+                    { "IncorrectCount", two }
+                };
 
-                        // Prepare to handle the JSON file
                         List<object> entries;
 
                         if (File.Exists(fullPath))
                         {
-                            // Read the existing JSON file content
                             string existingJson = File.ReadAllText(fullPath);
-
                             try
                             {
-                                // Try to parse as an array
                                 entries = JsonConvert.DeserializeObject<List<object>>(existingJson) ?? new List<object>();
                             }
                             catch (JsonSerializationException)
                             {
-                                // If parsing fails, treat the file as a single object
                                 var singleEntry = JsonConvert.DeserializeObject<object>(existingJson);
                                 entries = new List<object> { singleEntry };
                             }
                         }
                         else
                         {
-                            // If the file doesn't exist, start with a new list
                             entries = new List<object>();
                         }
 
-                        // Add the new entry to the list
                         entries.Add(newEntry);
-
-                        // Serialize the updated list to JSON
                         string jsonContent = JsonConvert.SerializeObject(entries, Formatting.Indented);
-
-                        // Write the updated JSON back to the file
                         File.WriteAllText(fullPath, jsonContent);
-
                         break;
                     }
                 case "CSV":
-                    {
-                        // Write data in CSV format
-                        string csvContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
-                        File.AppendAllText(fullPath, csvContent);
-                        break;
-                    }
                 case "TXT":
                     {
-                        // Write data in TXT format
-                        string txtContent = $"{word}, {word2}, {one}, {two}{Environment.NewLine}";
-                        File.AppendAllText(fullPath, txtContent);
+                        bool fileExists = File.Exists(fullPath);
+                        using (StreamWriter writer = new StreamWriter(fullPath, true))
+                        {
+                            // If the file doesn't exist, write a header first
+                            if (!fileExists)
+                            {
+                                writer.WriteLine($"{firstLabel},{secondLabel},CorrectCount,IncorrectCount");
+                            }
+
+                            // Append the new word entry
+                            writer.WriteLine($"{word},{word2},{one},{two}");
+                        }
                         break;
                     }
                 default:

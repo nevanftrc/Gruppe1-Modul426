@@ -83,7 +83,7 @@ namespace EasyWordWPF_US5
 
         private Buckets myBucket;
         private StatisticsService statisticsService;
-        private ExportClass exportClass;
+        private ExportandImportClass exportClass;
         private SettingsWindow settingsWindow;
         // Eigenschaften für die Software-Informationen
 
@@ -113,7 +113,7 @@ namespace EasyWordWPF_US5
             settingsWindow = new SettingsWindow(this);
 
             //Initialize json
-            exportClass = new ExportClass();
+            exportClass = new ExportandImportClass();
             exportClass.EnsureAppSettings();
             exportClass.ReadSettings();
             SetBucketCountLabel();
@@ -262,18 +262,35 @@ namespace EasyWordWPF_US5
                 if (isCorrect)
                 {
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
+                    UpdateStatistics(currentWord.German, currentWord.English, true);
                     wordList.RemoveAt(currentWordIndex);
                 }
                 else
                 {
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
+                    UpdateStatistics(currentWord.German, currentWord.English, false);
+
                     incorrectWords.Add(currentWord);
                 }
             }
         }
+        private void UpdateStatistics(string german, string english, bool correct)
+        {
+            var stats = statisticsService.GetOrCreateStatistics(german, english, isGermanToEnglish);
 
+            if (correct)
+            {
+                stats.CorrectCount++;
+            }
+            else
+            {
+                stats.IncorrectCount++;
+            }
 
+            // Save statistics after updating
+            statisticsService.SaveStatistics();
+        }
         private void ResetStatisticsButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Möchten Sie wirklich alle Statistiken zurücksetzen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -313,7 +330,7 @@ namespace EasyWordWPF_US5
             int savedBucketCount = exportClass.Buckets; // Get bucket count from JSON
 
             // Ensure UI updates correctly
-            numtxtbo.Content = exportClass.UserBucketCount ? savedBucketCount.ToString() : "3";
+            numtxtbo.Content = exportClass.UserBucketCount ? savedBucketCount.ToString() : "5";
 
             Debug.WriteLine($"[DEBUG] Loaded Bucket Count: {savedBucketCount}, UseDefault: {exportClass.UseDefault}");
         }
@@ -437,6 +454,7 @@ namespace EasyWordWPF_US5
                         string englishWord = innerValue["English"]?.ToString() ?? string.Empty;
                         int correctCount = innerValue["CorrectCount"] != null ? (int)innerValue["CorrectCount"] : 0;
                         int incorrectCount = innerValue["IncorrectCount"] != null ? (int)innerValue["IncorrectCount"] : 0;
+                        
 
                         // Determine the export path
                         string exportFilePath;
@@ -460,7 +478,8 @@ namespace EasyWordWPF_US5
                             comboboxValue: exportClass.dataextension,
                             filepath: exportFilePath,
                             Userdefined: exportClass.UseDefault,
-                            filename: filename
+                            filename: filename,
+                            isGermanToEnglish: isGermanToEnglish
                         );
                     }
 
@@ -525,11 +544,14 @@ namespace EasyWordWPF_US5
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var result = MessageBox.Show("Wollen sie die App Beenden?", "Exit", MessageBoxButton.YesNo);
-            Application.Current.Shutdown();
 
             if (result == MessageBoxResult.No)
             {
                 e.Cancel = true; // Prevent the window from closing
+            }
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
             }
         }
 

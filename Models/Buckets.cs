@@ -21,12 +21,12 @@ namespace EasyWordWPF
             buckets = new List<List<CSVlist>>();
 
             // Read saved bucket count from settings
-            ExportClass exportClass = new ExportClass();
+            ExportandImportClass exportClass = new ExportandImportClass();
             exportClass.ReadSettings();
 
             // If no valid value is provided, use the saved value or fallback to default (3)
             int bucketCount = (initialBucketCount > 0) ? initialBucketCount : exportClass.Buckets;
-            if (bucketCount <= 0) bucketCount = 3; // Final fallback
+            if (bucketCount <= 0) bucketCount = 5; // Final fallback
 
             for (int i = 0; i < bucketCount; i++)
             {
@@ -34,6 +34,11 @@ namespace EasyWordWPF
             }
         }
         // Fill the first bucket with words from a file
+        /// <summary>
+        /// Füllt den Eimer
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <exception cref="Exception"></exception>
         public void fill_bucket(string filepath)
         {
             List<CSVlist> words = CSVlist.insert_data(filepath); // Load words from file

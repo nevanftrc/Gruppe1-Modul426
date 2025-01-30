@@ -23,7 +23,7 @@ namespace EasyWordWPF_US5
     public partial class SettingsWindow : Window
     {
         private MainWindow mainWindow;
-        private readonly ExportClass exportClass;
+        private readonly ExportandImportClass exportClass;
 
         public bool check_value = false;
 
@@ -36,7 +36,7 @@ namespace EasyWordWPF_US5
             CheckGrammar.IsChecked = !mainWindow.isCaseSensitive; // Wenn isCaseSensitive true, wird die Checkbox deaktiviert (beachtet Groß/Kleinschreibung)
 
             // export settings :)
-            exportClass = new ExportClass();
+            exportClass = new ExportandImportClass();
             //path display
             LoadUserDefinedPath();
 

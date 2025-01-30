@@ -33,8 +33,10 @@ namespace EasyWordWPF_US5.Models
             File.WriteAllText(FilePath, json);
         }
 
-        public WordStatistics GetOrCreateStatistics(string german, string english)
+        public WordStatistics GetOrCreateStatistics(string word1, string word2, bool isGermanToEnglish)
         {
+            string german = isGermanToEnglish ? word1 : word2;
+            string english = isGermanToEnglish ? word2 : word1;
             string key = $"{german}:{english}";
             if (!statistics.TryGetValue(key, out var stats))
             {
