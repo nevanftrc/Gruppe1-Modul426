@@ -16,6 +16,7 @@
     <None Remove="Gear-01.png" />
     <None Remove="germany.png" />
     <None Remove="Icon-round-Question_mark.png" />
+    <None Remove="import-icon.png" />
     <None Remove="round-information-icon.png" />
     <None Remove="uk.png" />
   </ItemGroup>
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <Resource Include="book.png" />
+    <Resource Include="import-icon.png" />
     <Resource Include="file-icon.png" />
     <Resource Include="folder-1485.png" />
     <Resource Include="Gear-01.png" />

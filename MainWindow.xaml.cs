@@ -85,6 +85,7 @@ namespace EasyWordWPF_US5
         private StatisticsService statisticsService;
         private ExportandImportClass exportClass;
         private SettingsWindow settingsWindow;
+        private ImportWindow importWindow;
         // Eigenschaften für die Software-Informationen
 
 
@@ -109,7 +110,8 @@ namespace EasyWordWPF_US5
 
             InitializeComponent();
             myBucket = new Buckets();
-            statisticsService = new StatisticsService();
+            importWindow = new ImportWindow();
+            statisticsService = new StatisticsService(myBucket) { main = this };
             settingsWindow = new SettingsWindow(this);
 
             //Initialize json
@@ -417,7 +419,11 @@ namespace EasyWordWPF_US5
             settingsWindow.checkcheckboxeimer(exportClass.UserBucketCount);
 
         }
-
+        /// <summary>
+        /// Export click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnFileExport_Click(object sender, RoutedEventArgs e)
         {
             exportClass.ReadSettings();
@@ -557,7 +563,21 @@ namespace EasyWordWPF_US5
                 Application.Current.Shutdown();
             }
         }
+        /// <summary>
+        /// returns den wert von label
+        /// </summary>
+        /// <returns>anzahl</returns>
+        public int ReturnValueLBL()
+        {
+            UpdateBucketCountLabel(); // Ensure label is updated before reading
 
+            return myBucket.bucket_count;
+        }
+        private void ImportFile_Click(object sender, RoutedEventArgs e) 
+        {
+            ImportWindow ImporterWindow = new ImportWindow(); 
+            importWindow.Show();
+        }
     }
 }
 //Test

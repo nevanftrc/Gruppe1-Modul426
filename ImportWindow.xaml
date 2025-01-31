@@ -1,0 +1,37 @@
+﻿<Window x:Class="EasyWordWPF_US5.ImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EasyWordWPF_US5"
+        mc:Ignorable="d"
+        Title="ImportWindow" Height="350" Width="460" Icon="/import-icon.png">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" FontSize="20" Content="Importiere daten hier.. Drag+drop/Pfad:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox x:Name="PathTextBox" Grid.Row="1"/>
+        <Label Grid.Row="2" Content="Drop and Drop Hier --v"/>
+        <Border Grid.Row="3"  BorderBrush="Gray" BorderThickness="2" Background="Transparent">
+            <Grid x:Name="DrapAndDropArea" Background="LightGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="1" Content="Fügen sie hier die Datei" HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>
+        <Label Grid.Row="4" Content="Pfad:"/>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Button x:Name="CancelBtn" Content="Abbrechen" Margin="0,0,10,0" Width="70" Click="OnCancel" />
+            <Button x:Name="okayBtn" Content="Okay" Width="50"/>
+        </StackPanel>
+    </Grid>
+</Window>

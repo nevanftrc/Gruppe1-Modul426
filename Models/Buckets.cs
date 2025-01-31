@@ -13,7 +13,6 @@ namespace EasyWordWPF
     /// </summary>
     public class Buckets
     {
-        public MainWindow Menu { get; set; }
         public int bucket_count => buckets.Count; // Number of buckets
         public List<List<CSVlist>> buckets { get; private set; } // Buckets storing words
 
@@ -61,7 +60,7 @@ namespace EasyWordWPF
         /// <exception cref="Exception"></exception>
         public CSVlist GetWeightedRandomWord()
         {
-            // Ensure the bucket count is odd for a valid middle point
+            // Ensure bucket count is odd
             if (buckets.Count % 2 == 0)
             {
                 MessageBox.Show("Gerade Anzahl von Buckets ist nicht erlaubt! Bitte verwenden Sie eine ungerade Anzahl.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -73,7 +72,8 @@ namespace EasyWordWPF
 
             for (int i = 0; i < buckets.Count; i++)
             {
-                int weight = (buckets.Count - i) * (buckets[i].Count + 1); // Higher weight for earlier buckets
+                // Higher weight for earlier (harder) buckets
+                int weight = (buckets.Count - i) * (buckets[i].Count + 1);
                 bucketWeights[i] = weight;
                 totalWeight += weight;
             }
@@ -88,6 +88,7 @@ namespace EasyWordWPF
             for (int i = 0; i < buckets.Count; i++)
             {
                 cumulativeWeight += bucketWeights[i];
+
                 if (randomValue < cumulativeWeight && buckets[i].Count > 0)
                 {
                     return buckets[i][random.Next(buckets[i].Count)];
@@ -96,7 +97,6 @@ namespace EasyWordWPF
 
             return null;
         }
-
         // Move a word between buckets based on stats
         /// <summary>
         /// bewegt die werte
@@ -106,14 +106,15 @@ namespace EasyWordWPF
         /// <param name="incorrectCount">menge</param>
         public void MoveWord(CSVlist word, int correctCount, int incorrectCount)
         {
-            // Ensure the bucket count is odd before proceeding
+            // Ensure bucket count is odd
             if (buckets.Count % 2 == 0)
             {
-                MessageBox.Show("Gerade Anzahl von Buckets ist nicht erlaubt! Bitte verwenden Sie eine ungerade Anzahl.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Gerade Anzahl von Buckets ist nicht erlaubt! Bitte verwenden Sie eine ungerade Anzahl.",
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            int sourceBucket = GetBucketForWord(word);
+            int sourceBucket = GetBucketForWord(word.de_words, word.en_words);
 
             // If the word has no stats, place it in the middle bucket
             if (sourceBucket == -1)
@@ -124,31 +125,64 @@ namespace EasyWordWPF
             // Calculate movement based on mistakes/correct answers
             int movement = incorrectCount - correctCount;
 
-            // Move backward (more incorrect answers) or forward (more correct answers)
-            int targetBucket = Math.Max(0, Math.Min(buckets.Count - 1, sourceBucket - movement));
-            
-            //tester
-            Debug.Write($"Test: {targetBucket} bewegt: {movement} move: {sourceBucket},{word.de_words},{word.en_words}");
-            // Ensure the word is removed from the old bucket
-            buckets[sourceBucket].Remove(word);
+            // Ensure the movement stays within the valid range (0 to max bucket index)
+            int targetBucket = Math.Clamp(sourceBucket - movement, 0, buckets.Count - 1);
+
+            Debug.Write($"\nTest: {targetBucket} bewegt: {movement} Berechnung: {sourceBucket}: {word.de_words} und {word.en_words}\n");
+
+            // Remove from the old bucket if it exists there
+            if (buckets[sourceBucket].Contains(word))
+            {
+                buckets[sourceBucket].Remove(word);
+            }
 
             // Add to the new bucket
-            buckets[targetBucket].Add(word);
+            if (!buckets[targetBucket].Contains(word))
+            {
+                buckets[targetBucket].Add(word);
+            }
         }
         /// <summary>
-        /// nimmt die werte
+        /// Finds the bucket index for a given word.
         /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        private int GetBucketForWord(CSVlist word)
+        public int GetBucketForWord(string german, string english)
         {
             for (int i = 0; i < buckets.Count; i++)
             {
-                if (buckets[i].Contains(word))
-                    return i;
+                if (buckets[i].Any(w => w.de_words == german && w.en_words == english))
+                    return i; // Return the index of the bucket containing the word
             }
-            return -1;
+            return -1; // Word not found in any bucket
         }
+        /// <summary>
+        /// Selects a random word from all eligible buckets (excludes highest-level bucket).
+        /// </summary>
+        public CSVlist GetRandomWord()
+        {
+            List<int> validBuckets = new List<int>();
+
+            // Collect all buckets except the highest-level one
+            for (int i = 0; i < buckets.Count - 1; i++)
+            {
+                if (buckets[i].Count > 0)
+                {
+                    validBuckets.Add(i);
+                }
+            }
+
+            if (validBuckets.Count == 0)
+            {
+                MessageBox.Show("Kein gültiges Wort zum Üben verfügbar!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return null; // No word found
+            }
+
+            // Pick a random bucket
+            int selectedBucket = validBuckets[new Random().Next(validBuckets.Count)];
+
+            // Pick a random word from that bucket
+            return buckets[selectedBucket][new Random().Next(buckets[selectedBucket].Count)];
+        }
+
         // Add buckets
         public void bucket_add(int count)
         {

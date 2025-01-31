@@ -1,6 +1,7 @@
 ﻿using EasyWordWPF;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace EasyWordWPF_US5.Models
 {
@@ -28,13 +30,14 @@ namespace EasyWordWPF_US5.Models
         public string dataextension { get; set; }
         public bool UserBucketCount { get; set; }
         public int Buckets { get; set; }
-
         private readonly string appSettingsFilePath;
         private Buckets _bucket;
-
         public SettingsWindow settingsWindow { get; set; }
+        public MainWindow main {  get; set; }
         public List<string> ExtensionsList { get; set; }
-
+        /// <summary>
+        /// Der constructor von Export/importer Klasse
+        /// </summary>
         public ExportandImportClass()
         {
             Germanword = string.Empty;
@@ -162,6 +165,16 @@ namespace EasyWordWPF_US5.Models
             string firstLabel = isGermanToEnglish ? "German" : "English";
             string secondLabel = isGermanToEnglish ? "English" : "German";
 
+            ReadSettings();
+
+            int bucketCount = main?.ReturnValueLBL() ?? Buckets;
+
+            int movement = two - one;
+
+            int middleBucket = bucketCount / 2;
+
+            int currentLocation = Math.Max(0, Math.Min(bucketCount - 1, middleBucket - movement));
+
             if (!isGermanToEnglish)
             {
                 (word, word2) = (word2, word); // Swap words for English-to-German mode
@@ -177,7 +190,9 @@ namespace EasyWordWPF_US5.Models
                     { firstLabel, word },
                     { secondLabel, word2 },
                     { "CorrectCount", one },
-                    { "IncorrectCount", two }
+                    { "IncorrectCount", two },
+                    { "BucketCount", bucketCount },
+                    { "CurrentLocation", currentLocation }
                 };
 
                         List<object> entries;
@@ -214,11 +229,11 @@ namespace EasyWordWPF_US5.Models
                             // If the file doesn't exist, write a header first
                             if (!fileExists)
                             {
-                                writer.WriteLine($"{firstLabel},{secondLabel},CorrectCount,IncorrectCount");
+                                writer.WriteLine($"{firstLabel},{secondLabel},CorrectCount,IncorrectCount,BucketCount,CurrentLocation");
                             }
 
                             // Append the new word entry
-                            writer.WriteLine($"{word},{word2},{one},{two}");
+                            writer.WriteLine($"{word},{word2},{one},{two},{bucketCount},{currentLocation}");
                         }
                         break;
                     }
@@ -228,6 +243,13 @@ namespace EasyWordWPF_US5.Models
                         break;
                     }
             }
+        }
+        /// <summary>
+        /// Umwandelt die werte und vergibt diese an Statics
+        /// </summary>
+        public void ImportDataTypes() 
+        {
+            
         }
     }
 }

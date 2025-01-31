@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="170"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Export path"/>
-            <Button x:Name="HelpExport" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave">
+            <Button x:Name="HelpExport" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave" Foreground="{x:Null}">
                 <Image Source="/Icon-round-Question_mark.png" Height="20" Width="20"></Image>
             </Button>
             <Label x:Name="HelpBox" Content="Diese Option wird defeniert für Pfade,&#10;clicke den Checkbox um es zu aktivieren."  

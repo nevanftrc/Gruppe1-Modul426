@@ -15,7 +15,7 @@
                 </Grid.RowDefinitions>
 
                 <Button x:Name="addbtn" Content="^" Grid.Row="1" MaxWidth="30" Click="bucketAdd" MaxHeight="30"/>
-                <Label x:Name="numtxtbo" Content="3" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
+                <Label x:Name="numtxtbo" Content="5" Grid.Row="1" MaxWidth="50" MaxHeight="30" HorizontalAlignment="Center" BorderBrush="#FF787878" BorderThickness="1,1,1,1" Margin="0,25,0,25" Grid.RowSpan="3" Width="30" HorizontalContentAlignment="Center"/>
                 <Button x:Name="subbtn" Content="v" Grid.Row="3" MaxWidth="30" MaxHeight="30" Click="bucketRem"/>
             </Grid>
         </Grid>
@@ -45,15 +45,18 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OnFileExport_Click">
                 <Image Source="/file-icon.png"></Image>
             </Button>
+            <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="ImportFile_Click">
+                <Image Source="/import-icon.png" Width="40" Height="35"></Image>
+            </Button>
             <Button Click="OpenSettings" Background="{x:Null}" BorderBrush="{x:Null}">
                 <Image Source="/Gear-01.png"></Image>
             </Button>
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="OpenInfo_Click">
                 <Image Source="/round-information-icon.png" ></Image>
             </Button>
-            
+
             <!-- G/E-Button rechts -->
-            <Grid MinWidth="450">
+            <Grid MinWidth="400">
                 <Button x:Name="langswitchbtn"
                     Click="SwitchModeButton_Click" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}">
                     <Image  x:Name="langswitchImage" Source="/germany.png" Height="30" Width="60"></Image>
