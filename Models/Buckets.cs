@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
 using System.Windows;
 namespace EasyWordWPF
 {
@@ -19,9 +20,9 @@ namespace EasyWordWPF
         public Buckets(int initialBucketCount = -1) // Use -1 as a flag
         {
             buckets = new List<List<CSVlist>>();
-
+            
             // Read saved bucket count from settings
-            ExportandImportClass exportClass = new ExportandImportClass();
+            ExportClass exportClass = new ExportClass();
             exportClass.ReadSettings();
 
             // If no valid value is provided, use the saved value or fallback to default (3)

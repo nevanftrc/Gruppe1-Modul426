@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace EasyWordWPF_US5.Models
 {
     /// <summary>
     /// Diese Klasse wird verwendet fürs exportieren und das schreiben für System einstellungen
-    /// Und das Importieren der daten
     /// </summary>
-    public class ExportandImportClass
+    public class ExportClass
     {
         public string Germanword { get; set; }
         public string Englishword { get; set; }
@@ -38,14 +38,14 @@ namespace EasyWordWPF_US5.Models
         /// <summary>
         /// Der constructor von Export/importer Klasse
         /// </summary>
-        public ExportandImportClass()
+        public ExportClass()
         {
             Germanword = string.Empty;
             Englishword = string.Empty;
             CorrectCount = 0;
             IncorrectCount = 0;
-            DefaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
-            appSettingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            DefaultPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
+            appSettingsFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             UserPath = string.Empty;
             UseDefault = true;
             dataextension = "JSON";
@@ -113,7 +113,7 @@ namespace EasyWordWPF_US5.Models
                 }
 
                 var json = File.ReadAllText(appSettingsFilePath);
-                var settings = JsonConvert.DeserializeObject<ExportandImportClass>(json);
+                var settings = JsonConvert.DeserializeObject<ExportClass>(json);
 
                 if (settings != null)
                 {
@@ -144,7 +144,7 @@ namespace EasyWordWPF_US5.Models
         public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish)
         {
             // Get the AppData path and create a new subfolder for the application
-            string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
+            string appDataPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
             Directory.CreateDirectory(appDataPath); // Ensure the folder exists
 
             // Generate the filename
@@ -157,9 +157,9 @@ namespace EasyWordWPF_US5.Models
                 : appDataPath;
 
             // Determine the full file path with the correct extension
-            string fullPath = Path.HasExtension(savePath)
+            string fullPath = System.IO.Path.HasExtension(savePath)
                 ? savePath // If filepath already contains a full file path, use it directly
-                : Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
+                : System.IO.Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
 
             // Define correct labels based on quiz mode
             string firstLabel = isGermanToEnglish ? "German" : "English";
@@ -226,10 +226,15 @@ namespace EasyWordWPF_US5.Models
                         bool fileExists = File.Exists(fullPath);
                         using (StreamWriter writer = new StreamWriter(fullPath, true))
                         {
+                            if (fileExists)
+                            {
+                                File.Delete(fullPath);
+                                Debug.WriteLine("Der letzte heutige Stats wurde gelöscht.");
+                            }
                             // If the file doesn't exist, write a header first
                             if (!fileExists)
                             {
-                                writer.WriteLine($"{firstLabel},{secondLabel},CorrectCount,IncorrectCount,BucketCount,CurrentLocation");
+                                writer.WriteLine($"Erstes Wort,Zweites Wort,CorrectCount,IncorrectCount,BucketCount,CurrentLocation");
                             }
 
                             // Append the new word entry
@@ -243,13 +248,6 @@ namespace EasyWordWPF_US5.Models
                         break;
                     }
             }
-        }
-        /// <summary>
-        /// Umwandelt die werte und vergibt diese an Statics
-        /// </summary>
-        public void ImportDataTypes() 
-        {
-            
         }
     }
 }

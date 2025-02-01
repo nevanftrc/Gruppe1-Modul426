@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -83,11 +84,10 @@ namespace EasyWordWPF_US5
 
         private Buckets myBucket;
         private StatisticsService statisticsService;
-        private ExportandImportClass exportClass;
+        private ExportClass exportClass;
         private SettingsWindow settingsWindow;
         private ImportWindow importWindow;
         // Eigenschaften für die Software-Informationen
-
 
         public string DeveloperName { get; set; } = "Gruppe1"; 
         public string Version { get; set; } = "1.0.0";
@@ -110,12 +110,11 @@ namespace EasyWordWPF_US5
 
             InitializeComponent();
             myBucket = new Buckets();
-            importWindow = new ImportWindow();
+            importWindow = new ImportWindow(myBucket);
             statisticsService = new StatisticsService(myBucket) { main = this };
             settingsWindow = new SettingsWindow(this);
-
             //Initialize json
-            exportClass = new ExportandImportClass();
+            exportClass = new ExportClass();
             exportClass.EnsureAppSettings();
             exportClass.ReadSettings();
             SetBucketCountLabel();
@@ -575,8 +574,8 @@ namespace EasyWordWPF_US5
         }
         private void ImportFile_Click(object sender, RoutedEventArgs e) 
         {
-            ImportWindow ImporterWindow = new ImportWindow(); 
-            importWindow.Show();
+            ImportWindow ImporterWindow = new ImportWindow(myBucket); 
+            ImporterWindow.Show();
         }
     }
 }
