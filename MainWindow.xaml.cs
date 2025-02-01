@@ -11,7 +11,7 @@ using EasyWordWPF;
 using EasyWordWPF_US5.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static EasyWordWPF_US5.Models.DataStorage;
 
 namespace EasyWordWPF_US5
@@ -279,6 +279,78 @@ namespace EasyWordWPF_US5
                 }
             }
         }
+        /// <summary>
+        /// wird die gleiche werte haben..
+        /// </summary>
+        private void StartQuizLoopImported()
+        {
+            string importedFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imported_data.json");
+
+            if (!File.Exists(importedFilePath))
+            {
+                MessageBox.Show("Keine importierten Daten gefunden.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                // Load imported words from JSON
+                string jsonContent = File.ReadAllText(importedFilePath);
+                var importedWordList = JsonConvert.DeserializeObject<List<Tuple<string, string>>>(jsonContent);
+
+                if (importedWordList == null || !importedWordList.Any())
+                {
+                    MessageBox.Show("Die importierte Wortliste ist leer.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                while (importedWordList.Any())
+                {
+                    int currentWordIndex = random.Next(importedWordList.Count);
+                    var currentWord = importedWordList[currentWordIndex];
+
+                    string question = isGermanToEnglish
+                        ? $"Wie lautet die englische Übersetzung von '{currentWord.Item1}'?"
+                        : $"Wie lautet die deutsche Übersetzung von '{currentWord.Item2}'?";
+
+                    string input = Microsoft.VisualBasic.Interaction.InputBox(question, "Importiertes Wortquiz", "");
+
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        MessageBox.Show("Eingabe abgebrochen. Quiz wird beendet.", "Abbruch", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
+                    bool isCorrect = isGermanToEnglish
+                        ? (isCaseSensitive ? input.Trim().Equals(currentWord.Item2) : input.Trim().Equals(currentWord.Item2, StringComparison.OrdinalIgnoreCase))
+                        : (isCaseSensitive ? input.Trim().Equals(currentWord.Item1) : input.Trim().Equals(currentWord.Item1, StringComparison.OrdinalIgnoreCase));
+
+                    if (isCorrect)
+                    {
+                        MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
+                        UpdateStatistics(currentWord.Item1, currentWord.Item2, true);
+                        CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
+                        myBucket.MoveWord(wordObject, 1, 0);
+                        importedWordList.RemoveAt(currentWordIndex);
+                    }
+                    else
+                    {
+                        string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
+                        MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
+                        UpdateStatistics(currentWord.Item1, currentWord.Item2, false);
+                        CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
+                        myBucket.MoveWord(wordObject, 0, 1);
+                        //incorrectWords.Add(currentWord); muss noch bearbeitet werden
+                    }
+                }
+
+                MessageBox.Show("Alle importierten Wörter wurden abgefragt!", "Quiz beendet", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der importierten Daten: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void UpdateStatistics(string german, string english, bool correct)
         {
             var stats = statisticsService.GetOrCreateStatistics(german, english, isGermanToEnglish);
@@ -418,14 +490,44 @@ namespace EasyWordWPF_US5
             settingsWindow.checkcheckboxeimer(exportClass.UserBucketCount);
 
         }
+        private bool clicked = false;
         /// <summary>
         /// Export click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        // Declare clicked as a class-level variable
         private void OnFileExport_Click(object sender, RoutedEventArgs e)
         {
             exportClass.ReadSettings();
+
+            // Toggle clicked state
+            if (clicked)
+            {
+                // Delete the previously generated file if it exists
+                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
+                string username = Environment.UserName;
+                string date = DateTime.Now.ToString("yyyy-MM-dd");
+                string filename = $"{username}_{date}.{exportClass.dataextension.ToLower()}";
+                string exportFilePath = Path.Combine(exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
+                    ? appDataPath
+                    : exportClass.UserPath, filename);
+
+                if (File.Exists(exportFilePath))
+                {
+                    File.Delete(exportFilePath);
+                    MessageBox.Show($"Datei wurde gelöscht: {exportFilePath}");
+                }
+                else
+                {
+                    MessageBox.Show("Keine Datei zum Löschen gefunden.");
+                }
+
+                // Reset clicked flag
+                clicked = false;
+                return;
+            }
+
             try
             {
                 // Path to the JSON statistics file
@@ -435,12 +537,12 @@ namespace EasyWordWPF_US5
                 string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
                 Directory.CreateDirectory(appDataPath);
 
-                // Generate the filename
+                // Generate the base filename
                 string username = Environment.UserName;
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
                 string filename = $"{username}_{date}";
 
-                // If the file does not exist, inform the user and stop processing
+                // Check if statistics file exists
                 if (!System.IO.File.Exists(loaderFilePath))
                 {
                     MessageBox.Show("Statistics file nicht gefunden in AppData.");
@@ -451,34 +553,39 @@ namespace EasyWordWPF_US5
                 string jsonContent = System.IO.File.ReadAllText(loaderFilePath);
                 var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonContent);
 
-                // Extract only the inner objects (skip the outer key)
                 if (jsonObject != null)
                 {
                     string lastExportPath = string.Empty;
+                    string exportDirectory = exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
+                        ? appDataPath
+                        : exportClass.UserPath;
+
+                    // Ensure directory exists
+                    Directory.CreateDirectory(exportDirectory);
+
+                    // Determine a unique filename to prevent overwriting
+                    string fileExtension = exportClass.dataextension.ToLower();
+                    string exportFilePath = Path.Combine(exportDirectory, $"{filename}.{fileExtension}");
+
+                    int fileNumber = 1;
+                    while (File.Exists(exportFilePath))
+                    {
+                        exportFilePath = Path.Combine(exportDirectory, $"{filename}_{fileNumber}.{fileExtension}");
+                        fileNumber++;
+                    }
+
+                    lastExportPath = exportFilePath;
+
                     foreach (var innerValue in jsonObject.Values)
                     {
-                        // Extract the relevant fields from the inner JSON object
+                        // Extract the relevant fields
                         string germanWord = innerValue["German"]?.ToString() ?? string.Empty;
                         string englishWord = innerValue["English"]?.ToString() ?? string.Empty;
                         int correctCount = innerValue["CorrectCount"] != null ? (int)innerValue["CorrectCount"] : 0;
                         int incorrectCount = innerValue["IncorrectCount"] != null ? (int)innerValue["IncorrectCount"] : 0;
-                        
 
-                        // Determine the export path
-                        string exportFilePath;
-                        if (!exportClass.UseDefault && !string.IsNullOrWhiteSpace(exportClass.UserPath))
-                        {
-                            // If UseDefault is false and ExportPath is set, use the user-defined path
-                            exportFilePath = Path.Combine(exportClass.UserPath, $"{filename}.{exportClass.dataextension.ToLower()}");
-                        }
-                        else
-                        {
-                            // Otherwise, use the default appDataPath
-                            exportFilePath = Path.Combine(appDataPath, $"{filename}.{exportClass.dataextension.ToLower()}");
-                        }
-                        lastExportPath = exportFilePath;
                         // Call the export method with the extracted data
-                        exportClass.exporterMethod(
+                        exportClass.ExporterMethod(
                             word: germanWord,
                             word2: englishWord,
                             one: correctCount,
@@ -497,6 +604,9 @@ namespace EasyWordWPF_US5
                 {
                     MessageBox.Show("Keine daten wurden gefunden unter statistics file.");
                 }
+
+                // Set clicked to true to enable delete mode next time
+                clicked = true;
             }
             catch (Exception ex)
             {

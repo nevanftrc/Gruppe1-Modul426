@@ -82,10 +82,11 @@ namespace EasyWordWPF_US5.Models
         /// <param name="filePath">den pfad</param>
         public void ImportData(string filePath)
         {
-            Dictionary<string, WordStatistics> importedData = new Dictionary<string, WordStatistics>();
             try
             {
                 string extension = Path.GetExtension(filePath).ToLower();
+                Dictionary<string, WordStatistics> importedData = new Dictionary<string, WordStatistics>();
+
                 if (extension == ".csv" || extension == ".txt")
                 {
                     using (StreamReader reader = new StreamReader(filePath))
@@ -105,32 +106,22 @@ namespace EasyWordWPF_US5.Models
                                 int bucketCount = int.Parse(parts[4]);
                                 int currentLocation = int.Parse(parts[5]);
 
-                                // Determine if word1 is German or English based on known word patterns
-                                bool isWord1German = IsGermanWord(word1); // Detects if it's a German word
+                                // Detect language and assign correctly
+                                bool isWord1German = IsGermanWord(word1);
                                 string german = isWord1German ? word1 : word2;
                                 string english = isWord1German ? word2 : word1;
-
                                 string key = $"{german}:{english}";
 
-                                if (statistics.ContainsKey(key))
+                                if (!importedData.ContainsKey(key))
                                 {
-                                    // Update existing entry
-                                    statistics[key].CorrectCount = correctCount;
-                                    statistics[key].IncorrectCount = incorrectCount;
-                                    statistics[key].CurrentLocation = currentLocation;
-                                    statistics[key].BucketCount = bucketCount;
-                                }
-                                else
-                                {
-                                    // Add new entry
-                                    statistics[key] = new WordStatistics
+                                    importedData[key] = new WordStatistics
                                     {
                                         German = german,
                                         English = english,
                                         CorrectCount = correctCount,
                                         IncorrectCount = incorrectCount,
-                                        CurrentLocation = currentLocation,
-                                        BucketCount = bucketCount
+                                        BucketCount = bucketCount,
+                                        CurrentLocation = currentLocation
                                     };
                                 }
                             }
@@ -143,25 +134,26 @@ namespace EasyWordWPF_US5.Models
                     List<WordStatistics> importedList = JsonConvert.DeserializeObject<List<WordStatistics>>(jsonContent)
                                                         ?? new List<WordStatistics>();
 
-                    Dictionary<string, WordStatistics> TempimportedData = new Dictionary<string, WordStatistics>();
-
                     foreach (var entry in importedList)
                     {
-                        // Auto-detect which language comes first based on common patterns
-                        bool isGermanFirst = IsGermanWord(entry.German); // Helper function to check if it's a German word
+                        bool isGermanFirst = IsGermanWord(entry.German);
 
-                        string key = isGermanFirst
-                            ? $"{entry.German}:{entry.English}"  // German -> English
-                            : $"{entry.English}:{entry.German}"; // English -> German
+                        string german = isGermanFirst ? entry.German : entry.English;
+                        string english = isGermanFirst ? entry.English : entry.German;
+                        string key = $"{german}:{english}";
 
-                        // Add entry to the dictionary
-                        importedData[key] = entry;
-                    }
-
-                    // Merge the imported data into the main statistics dictionary
-                    foreach (var entry in TempimportedData)
-                    {
-                        statistics[entry.Key] = entry.Value;
+                        if (!importedData.ContainsKey(key))
+                        {
+                            importedData[key] = new WordStatistics
+                            {
+                                German = german,
+                                English = english,
+                                CorrectCount = entry.CorrectCount,
+                                IncorrectCount = entry.IncorrectCount,
+                                BucketCount = entry.BucketCount,
+                                CurrentLocation = entry.CurrentLocation
+                            };
+                        }
                     }
                 }
                 else
@@ -170,9 +162,19 @@ namespace EasyWordWPF_US5.Models
                     return;
                 }
 
-                // Save updated statistics back to JSON
+                // Merge imported data into the main statistics dictionary
+                foreach (var entry in importedData)
+                {
+                    statistics[entry.Key] = entry.Value;
+                }
+
+                // Save updated statistics back to JSON if file doesn't already exist
                 string savePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imported_data.json");
-                File.WriteAllText(savePath, JsonConvert.SerializeObject(statistics, Formatting.Indented));
+                if (!File.Exists(savePath))
+                {
+                    File.WriteAllText(savePath, JsonConvert.SerializeObject(statistics, Formatting.Indented));
+                }
+
                 MessageBox.Show("Daten erfolgreich importiert!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)

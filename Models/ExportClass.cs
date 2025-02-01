@@ -100,7 +100,7 @@ namespace EasyWordWPF_US5.Models
             }
         }
         /// <summary>
-        /// List die werte von appsettings.json
+        /// Lisst die werte von appsettings.json
         /// </summary>
         public void ReadSettings()
         {
@@ -141,7 +141,7 @@ namespace EasyWordWPF_US5.Models
         /// <param name="filepath">Der pfad</param>
         /// <param name="Userdefined">Wenn falsch wird es angepasst zu filepath</param>
         /// <param name="filename">den namen</param>
-        public void exporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish)
+        public void ExporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish)
         {
             // Get the AppData path and create a new subfolder for the application
             string appDataPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
@@ -226,11 +226,6 @@ namespace EasyWordWPF_US5.Models
                         bool fileExists = File.Exists(fullPath);
                         using (StreamWriter writer = new StreamWriter(fullPath, true))
                         {
-                            if (fileExists)
-                            {
-                                File.Delete(fullPath);
-                                Debug.WriteLine("Der letzte heutige Stats wurde gelöscht.");
-                            }
                             // If the file doesn't exist, write a header first
                             if (!fileExists)
                             {
