@@ -225,16 +225,43 @@ namespace EasyWordWPF_US5
             }
         }
 
+        string importlocationpath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imported_data.json");
+
         private void StartQuizButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!wordList.Any())
-            {
-                MessageBox.Show("Bitte importieren Sie eine Wörterliste.", "Keine Wörter vorhanden", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
 
-            incorrectWords.Clear();
-            StartQuizLoop();
+            if (File.Exists(importlocationpath)) 
+            {
+                var result = MessageBox.Show("Wollen sie den geladen stand benützen?", "Verify", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.No)
+                {
+                    if (!wordList.Any())
+                    {
+                        MessageBox.Show("Bitte importieren Sie eine Wörterliste.", "Keine Wörter vorhanden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    MessageBox.Show("Es wird ein neuer stand verwendet.");
+                    incorrectWords.Clear();
+                    StartQuizLoop();
+                }
+                if (result == MessageBoxResult.Yes)
+                {
+                    incorrectWords.Clear();
+                    StartQuizLoopImported();
+                }
+            }
+            if (!File.Exists(importlocationpath))
+            {
+                if (!wordList.Any())
+                {
+                    MessageBox.Show("Bitte importieren Sie eine Wörterliste.", "Keine Wörter vorhanden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                incorrectWords.Clear();
+                StartQuizLoop();
+            }
         }
 
         private void StartQuizLoop()
@@ -280,7 +307,7 @@ namespace EasyWordWPF_US5
             }
         }
         /// <summary>
-        /// wird die gleiche werte haben..
+        /// spielt den quiz mit dem importierte daten
         /// </summary>
         private void StartQuizLoopImported()
         {
@@ -294,13 +321,17 @@ namespace EasyWordWPF_US5
 
             try
             {
-                // Load imported words from JSON
+                // Load and parse JSON content
                 string jsonContent = File.ReadAllText(importedFilePath);
-                var importedWordList = JsonConvert.DeserializeObject<List<Tuple<string, string>>>(jsonContent);
+                var importedData = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(jsonContent);
+                var importedWordList = importedData?.Values
+                    .Select(entry => (entry["German"].ToString(), entry["English"].ToString()))
+                    .Where(entry => isGermanToEnglish ? IsGermanWord(entry.Item1) : IsEnglishWord(entry.Item2))  // Filter German or English words
+                    .ToList();
 
                 if (importedWordList == null || !importedWordList.Any())
                 {
-                    MessageBox.Show("Die importierte Wortliste ist leer.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Die importierte Wortliste enthält keine passenden Wörter.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -340,7 +371,7 @@ namespace EasyWordWPF_US5
                         UpdateStatistics(currentWord.Item1, currentWord.Item2, false);
                         CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
                         myBucket.MoveWord(wordObject, 0, 1);
-                        //incorrectWords.Add(currentWord); muss noch bearbeitet werden
+                        incorrectWords.Add((currentWord.Item1, currentWord.Item2));
                     }
                 }
 
@@ -351,6 +382,36 @@ namespace EasyWordWPF_US5
                 MessageBox.Show($"Fehler beim Laden der importierten Daten: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        /// <summary>
+        /// Checks if a word is likely German based on common patterns and dictionary entries.
+        /// </summary>
+        private bool IsGermanWord(string word)
+        {
+            string[] germanIndicators = { "ä", "ö", "ü", "ss", "sch", "ch", "ung", "keit", "heit", "zig", "pf" };
+
+            return germanIndicators.Any(indicator => word.Contains(indicator)) || DictonaryGermanWords.Contains(word.ToLower());
+        }
+        private static readonly HashSet<string> DictonaryGermanWords = new HashSet<string>
+            {
+                "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf",
+                "hundert", "tausend", "Million", "Milliarde", "erste", "zweite", "dritte",
+                "Montag", "Dienstag", "Samstag", "Daumen", "Mund", "Angestellte", "Sontag", "Donnerstag", "Freitag", "Juni",
+                "Po", "eine", "wo","wieveil", "wie", "was", "warum", "wann","Bewerbung", "Beruf", "Arbeit", "Ausbildung", "Ohr",
+                "Haar", "Gesicht", "Auge", "Nase", "Gewebe", "Kinn", "Wange", "Stirn", "Hals","Nacken","Brust","Bauch","Bein", "Arm",
+                "Ellenbogen", "Fingernagel", "Kehle", "Lippe","Trommelfell","Knie","Rippe","Lunge","Leber","Blut","Darm","Niere",
+                "Muskel","Skelett","Haut","Zunge","Knochen","Sehne", "Januar", "Februar", "April", "Mai", "Juli", "August", "September", "Oktober",
+                "November","Dezember", "Lehrstelle"
+
+            };
+        /// <summary>
+        /// Checks if a word is likely English (opposite of IsGermanWord).
+        /// </summary>
+        private bool IsEnglishWord(string word)
+        {
+            return !IsGermanWord(word);  // If it's not German, assume it's English
+        }
+
         private void UpdateStatistics(string german, string english, bool correct)
         {
             var stats = statisticsService.GetOrCreateStatistics(german, english, isGermanToEnglish);
