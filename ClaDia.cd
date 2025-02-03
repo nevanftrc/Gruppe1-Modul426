@@ -35,36 +35,30 @@
   </Class>
   <Class Name="EasyWordWPF_US5.MainWindow">
     <Position X="22.25" Y="12.25" Width="5.75" />
-    <AssociationLine Name="statisticsService" Type="EasyWordWPF_US5.Models.StatisticsService" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="28" Y="17.405" />
-        <Point X="32.188" Y="17.405" />
-        <Point X="32.188" Y="15.603" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>YiCAsIAAAAQBgEAARTAAAAhQBogBAAASAgQAggCARgA=</HashCode>
+      <HashCode>YiCAsoACAAQBgEAARTAAAAhQBsoBAAASAgQgggCARgA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="myBucket" />
+      <Field Name="statisticsService" />
       <Field Name="exportClass" />
       <Field Name="settingsWindow" />
-      <Field Name="statisticsService" />
+      <Field Name="Newdictonary" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="EasyWordWPF_US5.Models.StatisticsService">
     <Position X="28.75" Y="12.25" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AgQAAAAABAAAAAAAAACMBIAAAAAAAAAAAABAAAAAAAQ=</HashCode>
+      <HashCode>AgQAAAAABAAAAAABAACMBIAAAEAAQAAAAgBAAAAAAAQ=</HashCode>
       <FileName>Models\StatisticsService.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="_bucket" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="EasyWordWPF_US5.Models.WordStatistics">
+  <Class Name="WordStatistics">
     <Position X="33" Y="11.75" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAQAQAAAAAAAAAAAAoABACAAAAAAAAAAAAAAAA=</HashCode>
@@ -90,11 +84,11 @@
       <FileName>Models\DataStorage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EasyWordWPF_US5.Models.ExportandImportClass">
+  <Class Name="EasyWordWPF_US5.Models.ExportClass">
     <Position X="2.5" Y="7.25" Width="10.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAgACAQEAAAAFAACAAAZAQJABCAAAAgEAAAQAAAQ=</HashCode>
-      <FileName>Models\ExportAndImportClass.cs</FileName>
+      <HashCode>AAAAAgACAQEAAAAEAACAgAZAQBABCAAAAgEAAAQAAAQ=</HashCode>
+      <FileName>Models\ExportClass.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="_bucket" />
@@ -110,6 +104,13 @@
       <Field Name="exportClass" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EasyWordWPF_US5.Models.NewDictonary">
+    <Position X="14.25" Y="20" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\NewDictonary.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -14,6 +14,8 @@ namespace EasyWordWPF_US5.Models
         public MainWindow main { get; set; }
         public CSVlist CSVlist { get; set; }
         public ExportClass Importer { get; set; }
+        public NewDictonary Newdictonary { get; private set; }
+
         private Buckets _bucket;
 
         public StatisticsService(Buckets bucket)
@@ -26,6 +28,7 @@ namespace EasyWordWPF_US5.Models
             }
 
             LoadStatistics();
+            Newdictonary = new NewDictonary();
         }
 
         private void LoadStatistics()
@@ -192,23 +195,8 @@ namespace EasyWordWPF_US5.Models
             // Common German word patterns: Umlauts, "ch", "sch", and certain endings
             string[] germanIndicators = { "ä", "ö", "ü", "ss", "sch", "ch", "ung", "keit", "heit", "zig", "pf" };
 
-            return germanIndicators.Any(indicator => word.Contains(indicator)) || DictonaryGermanWords.Contains(word.ToLower());
+            return germanIndicators.Any(indicator => word.Contains(indicator)) || Newdictonary.GetWords().Contains(word.ToLower());
         }
-
-        // A list of common German words for better detection
-        private static readonly HashSet<string> DictonaryGermanWords = new HashSet<string>
-            {
-                "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf",
-                "hundert", "tausend", "Million", "Milliarde", "erste", "zweite", "dritte",
-                "Montag", "Dienstag", "Samstag", "Daumen", "Mund", "Angestellte", "Sontag", "Donnerstag", "Freitag", "Juni",
-                "Po", "eine", "wo","wieveil", "wie", "was", "warum", "wann","Bewerbung", "Beruf", "Arbeit", "Ausbildung", "Ohr",
-                "Haar", "Gesicht", "Auge", "Nase", "Gewebe", "Kinn", "Wange", "Stirn", "Hals","Nacken","Brust","Bauch","Bein", "Arm",
-                "Ellenbogen", "Fingernagel", "Kehle", "Lippe","Trommelfell","Knie","Rippe","Lunge","Leber","Blut","Darm","Niere",
-                "Muskel","Skelett","Haut","Zunge","Knochen","Sehne", "Januar", "Februar", "April", "Mai", "Juli", "August", "September", "Oktober",
-                "November","Dezember", "Lehrstelle"
-
-            };
-
         /// <summary>
         /// Umwandelt die werte
         /// </summary>

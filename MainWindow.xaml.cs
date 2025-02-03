@@ -87,6 +87,7 @@ namespace EasyWordWPF_US5
         private ExportClass exportClass;
         private SettingsWindow settingsWindow;
         private ImportWindow importWindow;
+        public NewDictonary Newdictonary;
         // Eigenschaften für die Software-Informationen
 
         public string DeveloperName { get; set; } = "Gruppe1"; 
@@ -107,8 +108,8 @@ namespace EasyWordWPF_US5
         {
             //InitializeComponent();
             DataContext = this; // Setze den DataContext auf die aktuelle Instanz der MainWindow-Klasse
-
             InitializeComponent();
+            Newdictonary = new NewDictonary();
             myBucket = new Buckets();
             importWindow = new ImportWindow(myBucket);
             statisticsService = new StatisticsService(myBucket) { main = this };
@@ -390,20 +391,8 @@ namespace EasyWordWPF_US5
         {
             string[] germanIndicators = { "ä", "ö", "ü", "ss", "sch", "ch", "ung", "keit", "heit", "zig", "pf" };
 
-            return germanIndicators.Any(indicator => word.Contains(indicator)) || DictonaryGermanWords.Contains(word.ToLower());
+            return germanIndicators.Any(indicator => word.Contains(indicator)) || Newdictonary.GetWords().Contains(word.ToLower());
         }
-        private static readonly HashSet<string> DictonaryGermanWords = new HashSet<string>
-            {
-                "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf",
-                "hundert", "tausend", "Million", "Milliarde", "erste", "zweite", "dritte",
-                "Montag", "Dienstag", "Samstag", "Daumen", "Mund", "Angestellte", "Sontag", "Donnerstag", "Freitag", "Juni",
-                "Po", "eine", "wo","wieveil", "wie", "was", "warum", "wann","Bewerbung", "Beruf", "Arbeit", "Ausbildung", "Ohr",
-                "Haar", "Gesicht", "Auge", "Nase", "Gewebe", "Kinn", "Wange", "Stirn", "Hals","Nacken","Brust","Bauch","Bein", "Arm",
-                "Ellenbogen", "Fingernagel", "Kehle", "Lippe","Trommelfell","Knie","Rippe","Lunge","Leber","Blut","Darm","Niere",
-                "Muskel","Skelett","Haut","Zunge","Knochen","Sehne", "Januar", "Februar", "April", "Mai", "Juli", "August", "September", "Oktober",
-                "November","Dezember", "Lehrstelle"
-
-            };
         /// <summary>
         /// Checks if a word is likely English (opposite of IsGermanWord).
         /// </summary>
