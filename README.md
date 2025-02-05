@@ -22,4 +22,15 @@
 
 ### Summary
 
-Das ist eine Anwedung welche benützt werden kann um wörter zur erlernen mit verschiebung der Eimer.
+Das ist eine Anwedung welche benÃ¼tzt werden kann um wÃ¶rter zur erlernen mit verschiebung der Eimer.
+Die Eimer werden aufsteigten gezÃ¤hlt da es etwas schwer war das gegenteil zu machen, logik ist:
+
+| Eimer  | Ort | Berechung | Correct | Falsch |
+|--------|-----|-----------|---------|--------|
+| 5      | 3   | 0         | 0       | 0      |
+| 5      | 5   | +2        | 6       | 3      |
+| 5      | 1   | -2        | 2       | 4      |
+| 5      | 4   | +1        | 4       | 3      |
+| 5      | 3   | 0         | 1       | 1      |
+
+Dies ist eine Tabelle wie es strukturiert ist, es ist recht vereinfachert verglichen zum code.
