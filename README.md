@@ -35,4 +35,4 @@ Die Eimer werden aufsteigten gezählt da es etwas schwer war das gegenteil zu ma
 
 Dies ist eine Tabelle wie es strukturiert ist, es ist recht vereinfachert verglichen zum code.
 Nach diesen Übersicht die wörter beim höchsten wert sind die wo gelernt sind, diese mit dem tiefsten wert sind die welche noch gelernt werden müssen.
-Wenn es gibt werte welche häher oder tiefer sind wird es nicht überschritten so lange die Eimer Anzahl nicht grösser ist.
+Wenn es gibt werte welche höher oder tiefer sind wird es nicht überschritten so lange die Eimer Anzahl nicht grösser ist.
