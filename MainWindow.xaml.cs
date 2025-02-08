@@ -384,6 +384,22 @@ namespace EasyWordWPF_US5
             }
         }
 
+        private void AddNewWordButton_Click(object sender, RoutedEventArgs e)
+        {
+            string newWord = Microsoft.VisualBasic.Interaction.InputBox("Geben Sie das neue deutsche Wort ein:", "Neues Wort hinzufügen", "");
+            string newTranslation = Microsoft.VisualBasic.Interaction.InputBox($"Geben Sie die Übersetzung für '{newWord}' ein:", "Übersetzung hinzufügen", "");
+
+            if (!string.IsNullOrWhiteSpace(newWord) && !string.IsNullOrWhiteSpace(newTranslation))
+            {
+                wordList.Add((newWord, newTranslation));
+                MessageBox.Show($"Das Wortpaar '{newWord} - {newTranslation}' wurde hinzugefügt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Das Wort oder die Übersetzung darf nicht leer sein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         /// <summary>
         /// Checks if a word is likely German based on common patterns and dictionary entries.
         /// </summary>
