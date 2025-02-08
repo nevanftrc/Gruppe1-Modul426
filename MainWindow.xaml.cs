@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,9 @@ namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
     {
+
+        private Buckets wordBuckets; // Instanz der bestehenden Bucket-Klasse
+        public ObservableCollection<KeyValuePair<string, int>> BucketOverview { get; set; }
 
         public bool isCaseSensitive { get; set; } = true; // Standardmäßig Groß-/Kleinschreibung beachten
 
@@ -120,8 +124,14 @@ namespace EasyWordWPF_US5
             exportClass.ReadSettings();
             SetBucketCountLabel();
             this.Closing += MainWindow_Closing;
+            wordBuckets = new Buckets(); // Initialisiere die Buckets
+            BucketOverview = new ObservableCollection<KeyValuePair<string, int>>();
+
+            BucketList.ItemsSource = BucketOverview; // Datenbindung für UI
+            UpdateBucketOverview(); // Initiale Anzeige der Bucket-Werte
 
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadUserData();
@@ -153,6 +163,29 @@ namespace EasyWordWPF_US5
                 string imagePath = isGermanToEnglish ? "/germany.png" : "/uk.png";
                 langswitchImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
             }
+        }
+
+        private void UpdateBucketOverview()
+        {
+            BucketOverview.Clear(); // Zurücksetzen der alten Werte
+
+            for (int i = 0; i < wordBuckets.bucket_count; i++)
+            {
+                BucketOverview.Add(new KeyValuePair<string, int>($"Bucket {i + 1}", wordBuckets.buckets[i].Count));
+            }
+
+            Dispatcher.Invoke(() =>
+            {
+                BucketList.ItemsSource = null;
+                BucketList.ItemsSource = BucketOverview;
+            });
+        }
+
+        // Methode zum Verschieben eines Wortes zwischen Buckets
+        private void MoveWordToNextBucket(CSVlist word, int correctCount, int incorrectCount)
+        {
+            wordBuckets.MoveWord(word, correctCount, incorrectCount);
+            UpdateBucketOverview(); // Aktualisiere die UI sofort
         }
 
 
