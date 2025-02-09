@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static EasyWordWPF_US5.Models.DataStorage;
 
+
 namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
@@ -141,30 +142,26 @@ namespace EasyWordWPF_US5
         private void LoadUserData()
         {
             var loadedData = DataStorage.Load();
-            if (loadedData != null)
+
+            isGermanToEnglish = loadedData.IsGermanToEnglish; // Lade die Spracheinstellung
+
+            wordList.Clear();
+            foreach (var wp in loadedData.WordList)
             {
-                // Sprachmodus wiederherstellen
-                isGermanToEnglish = loadedData.IsGermanToEnglish;
-
-                // WordList wiederherstellen
-                wordList.Clear();
-                foreach (var wp in loadedData.WordList)
-                {
-                    wordList.Add((wp.German, wp.English));
-                }
-
-                // incorrectWords wiederherstellen
-                incorrectWords.Clear();
-                foreach (var wp in loadedData.IncorrectWords)
-                {
-                    incorrectWords.Add((wp.German, wp.English));
-                }
-
-                // Button-Inhalt anpassen
-                string imagePath = isGermanToEnglish ? "/germany.png" : "/uk.png";
-                langswitchImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+                wordList.Add((wp.German, wp.English));
             }
+
+            incorrectWords.Clear();
+            foreach (var wp in loadedData.IncorrectWords)
+            {
+                incorrectWords.Add((wp.German, wp.English));
+            }
+
+            // Button-Inhalt anpassen (falls es ein Sprache-Wechsel-Button gibt)
+            string imagePath = isGermanToEnglish ? "/germany.png" : "/uk.png";
+            langswitchImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
         }
+        
 
         private void UpdateBucketOverview()
         {
@@ -547,39 +544,7 @@ namespace EasyWordWPF_US5
                 MessageBox.Show($"Fehler: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Daten für das Speichern vorbereiten
-            var data = new DataStorage.UserData
-            {
-                IsGermanToEnglish = isGermanToEnglish,
-                WordList = new List<DataStorage.WordPair>(),
-                IncorrectWords = new List<DataStorage.WordPair>()
-            };
-
-            // incorrectWords in die speicherbare Klasse umwandeln
-            foreach (var w in incorrectWords)
-            {
-                data.IncorrectWords.Add(new DataStorage.WordPair
-                {
-                    German = w.Item1,
-                    English = w.Item2
-                });
-            }
-
-            // wordList in die speicherbare Klasse umwandeln
-            foreach (var w in wordList)
-            {
-                data.WordList.Add(new DataStorage.WordPair
-                {
-                    German = w.Item1,
-                    English = w.Item2
-                });
-            }
-
-            // Jetzt speichern
-            DataStorage.Save(data);
-        }
+       
 
         private void OpenSettings(object sender, RoutedEventArgs e)
         {
@@ -825,6 +790,20 @@ namespace EasyWordWPF_US5
             UpdateBucketOverview();
         }
 
+<<<<<<< HEAD
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var data = new DataStorage.UserData
+            {
+                IsGermanToEnglish = isGermanToEnglish,
+                WordList = wordList.Select(w => new DataStorage.WordPair { German = w.Item1, English = w.Item2 }).ToList(),
+                IncorrectWords = incorrectWords.Select(w => new DataStorage.WordPair { German = w.Item1, English = w.Item2 }).ToList()
+            };
+
+            DataStorage.Save(data);
+        }
+
+=======
         private void OpenLessonSelection_Click(object sender, RoutedEventArgs e)
         {
             LessonSelectionWindow lessonWindow = new LessonSelectionWindow();
@@ -834,6 +813,7 @@ namespace EasyWordWPF_US5
                 LoadWordsFromLessons(selectedLessons);
             }
         }
+>>>>>>> f7030bdec28afe40b9c4dd14ea95c5369823e5ad
 
         // Methode, um die Wörter basierend auf den ausgewählten Lektionen zu laden
         public void LoadWordsFromLessons(List<string> lessons)
