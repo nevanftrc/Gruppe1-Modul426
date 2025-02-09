@@ -59,6 +59,8 @@
             Click="OpenDeleteWordWindow_Click"/>
             <Button Content="Buckets zurücksetzen" Width="200" Margin="10"
             Click="ResetBuckets_Click"/>
+            <Button Content="Lektionen auswählen" Width="200" Margin="10"
+            Click="OpenLessonSelection_Click"/>
 
 
             <!-- Bereich für Software-Informationen -->

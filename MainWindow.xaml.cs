@@ -824,6 +824,80 @@ namespace EasyWordWPF_US5
             UpdateBucketOverview();
         }
 
+        private void OpenLessonSelection_Click(object sender, RoutedEventArgs e)
+        {
+            LessonSelectionWindow lessonWindow = new LessonSelectionWindow();
+            if (lessonWindow.ShowDialog() == true)
+            {
+                List<string> selectedLessons = lessonWindow.SelectedLessons;
+                LoadWordsFromLessons(selectedLessons);
+            }
+        }
+
+        // Methode, um die Wörter basierend auf den ausgewählten Lektionen zu laden
+        public void LoadWordsFromLessons(List<string> lessons)
+        {
+            // Bestehende Wortliste leeren
+            wordList.Clear();
+
+            // Den Ordner "words" im Ausgabeverzeichnis ermitteln
+            string wordsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "words");
+
+            // Prüfen, ob der Ordner existiert
+            if (!Directory.Exists(wordsFolder))
+            {
+                MessageBox.Show($"Der Ordner '{wordsFolder}' wurde nicht gefunden. Bitte stelle sicher, dass er in das Ausgabeverzeichnis kopiert wurde.",
+                                "Ordner nicht gefunden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Falls "Alle" ausgewählt wurde, lade alle CSV-Dateien
+            if (lessons.Contains("Alle"))
+            {
+                var csvFiles = Directory.GetFiles(wordsFolder, "*.csv");
+                foreach (var file in csvFiles)
+                {
+                    LoadWordsFromFile(file);
+                }
+            }
+            else
+            {
+                // Ansonsten nur die ausgewählten Lektionen laden
+                foreach (var lesson in lessons)
+                {
+                    string filePath = Path.Combine(wordsFolder, lesson + ".csv");
+                    if (File.Exists(filePath))
+                    {
+                        LoadWordsFromFile(filePath);
+                    }
+                }
+            }
+
+            MessageBox.Show("Die ausgewählten Lektionen wurden geladen.", "Erfolg",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        // Hilfsmethode zum Laden von Wörtern aus einer CSV-Datei
+        private void LoadWordsFromFile(string filePath)
+        {
+            try
+            {
+                var lines = File.ReadAllLines(filePath);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var parts = line.Split(';');
+                    if (parts.Length != 2) continue;
+                    wordList.Add((parts[0].Trim(), parts[1].Trim()));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der Datei {Path.GetFileName(filePath)}: {ex.Message}",
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
     }
 }
