@@ -586,17 +586,23 @@ namespace EasyWordWPF_US5
         {
             exportClass.ReadSettings();
 
-            // Toggle clicked state
+            string defaultFilename = $"{Environment.UserName}_{DateTime.Now:yyyy-MM-dd}";
+            string inputFilename = Microsoft.VisualBasic.Interaction.InputBox(
+                "Geben Sie einen Dateinamen ein (leer lassen für Standardnamen):",
+                "Exportdatei speichern",
+                defaultFilename
+            ).Trim();
+
+            string filename = string.IsNullOrWhiteSpace(inputFilename) ? defaultFilename : inputFilename;
+
             if (clicked)
             {
-                // Delete the previously generated file if it exists
-                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
-                string username = Environment.UserName;
-                string date = DateTime.Now.ToString("yyyy-MM-dd");
-                string filename = $"{username}_{date}.{exportClass.dataextension.ToLower()}";
-                string exportFilePath = Path.Combine(exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
-                    ? appDataPath
-                    : exportClass.UserPath, filename);
+                string exportFilePath = Path.Combine(
+                    exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
+                        ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports")
+                        : exportClass.UserPath,
+                    $"{filename}.{exportClass.dataextension.ToLower()}"
+                );
 
                 if (File.Exists(exportFilePath))
                 {
@@ -608,89 +614,72 @@ namespace EasyWordWPF_US5
                     MessageBox.Show("Keine Datei zum Löschen gefunden.");
                 }
 
-                // Reset clicked flag
                 clicked = false;
                 return;
             }
 
             try
             {
-                // Path to the JSON statistics file
                 string loaderFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "statistics.json");
 
-                // Ensure the directory for exports exists
-                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
-                Directory.CreateDirectory(appDataPath);
-
-                // Generate the base filename
-                string username = Environment.UserName;
-                string date = DateTime.Now.ToString("yyyy-MM-dd");
-                string filename = $"{username}_{date}";
-
-                // Check if statistics file exists
-                if (!System.IO.File.Exists(loaderFilePath))
+                if (!File.Exists(loaderFilePath))
                 {
                     MessageBox.Show("Statistics file nicht gefunden in AppData.");
                     return;
                 }
 
-                // Load and parse JSON content
-                string jsonContent = System.IO.File.ReadAllText(loaderFilePath);
+                string jsonContent = File.ReadAllText(loaderFilePath);
                 var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonContent);
 
-                if (jsonObject != null)
-                {
-                    string lastExportPath = string.Empty;
-                    string exportDirectory = exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
-                        ? appDataPath
-                        : exportClass.UserPath;
-
-                    // Ensure directory exists
-                    Directory.CreateDirectory(exportDirectory);
-
-                    // Determine a unique filename to prevent overwriting
-                    string fileExtension = exportClass.dataextension.ToLower();
-                    string exportFilePath = Path.Combine(exportDirectory, $"{filename}.{fileExtension}");
-
-                    int fileNumber = 1;
-                    while (File.Exists(exportFilePath))
-                    {
-                        exportFilePath = Path.Combine(exportDirectory, $"{filename}_{fileNumber}.{fileExtension}");
-                        fileNumber++;
-                    }
-
-                    lastExportPath = exportFilePath;
-
-                    foreach (var innerValue in jsonObject.Values)
-                    {
-                        // Extract the relevant fields
-                        string germanWord = innerValue["German"]?.ToString() ?? string.Empty;
-                        string englishWord = innerValue["English"]?.ToString() ?? string.Empty;
-                        int correctCount = innerValue["CorrectCount"] != null ? (int)innerValue["CorrectCount"] : 0;
-                        int incorrectCount = innerValue["IncorrectCount"] != null ? (int)innerValue["IncorrectCount"] : 0;
-
-                        // Call the export method with the extracted data
-                        exportClass.ExporterMethod(
-                            word: germanWord,
-                            word2: englishWord,
-                            one: correctCount,
-                            two: incorrectCount,
-                            comboboxValue: exportClass.dataextension,
-                            filepath: exportFilePath,
-                            Userdefined: exportClass.UseDefault,
-                            filename: filename,
-                            isGermanToEnglish: isGermanToEnglish
-                        );
-                    }
-
-                    MessageBox.Show($"{exportClass.dataextension} daten wurden erfolgreich gespeichert unter {lastExportPath}");
-                }
-                else
+                if (jsonObject == null)
                 {
                     MessageBox.Show("Keine daten wurden gefunden unter statistics file.");
+                    return;
                 }
 
-                // Set clicked to true to enable delete mode next time
+                string exportDirectory = exportClass.UseDefault || string.IsNullOrWhiteSpace(exportClass.UserPath)
+                    ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports")
+                    : exportClass.UserPath;
+
+                Directory.CreateDirectory(exportDirectory);
+
+                string fileExtension = exportClass.dataextension.ToLower();
+                string exportFilePath = Path.Combine(exportDirectory, $"{filename}.{fileExtension}");
+
+                int fileNumber = 1;
+                while (File.Exists(exportFilePath))
+                {
+                    exportFilePath = Path.Combine(exportDirectory, $"{filename}_{fileNumber}.{fileExtension}");
+                    fileNumber++;
+                }
+
+                foreach (var innerValue in jsonObject.Values)
+                {
+                    string lesson = innerValue.ContainsKey("Lesson") ? innerValue["Lesson"]?.ToString() ?? "Unbekannt" : "Unbekannt";
+                    string germanWord = innerValue["German"]?.ToString() ?? string.Empty;
+                    string englishWord = innerValue["English"]?.ToString() ?? string.Empty;
+                    int correctCount = innerValue["CorrectCount"] != null ? (int)innerValue["CorrectCount"] : 0;
+                    int incorrectCount = innerValue["IncorrectCount"] != null ? (int)innerValue["IncorrectCount"] : 0;
+                    int bucketCount = innerValue["BucketCount"] != null ? (int)innerValue["BucketCount"] : 5;
+                    int currentLocation = innerValue["CurrentLocation"] != null ? (int)innerValue["CurrentLocation"] : 0;
+
+                    exportClass.ExporterMethod(
+                        lesson: lesson, 
+                        word: germanWord,
+                        word2: englishWord,
+                        one: correctCount,
+                        two: incorrectCount,
+                        comboboxValue: exportClass.dataextension,
+                        filepath: exportFilePath,
+                        Userdefined: exportClass.UseDefault,
+                        filename: filename,
+                        isGermanToEnglish: isGermanToEnglish,
+                        bucketCount: bucketCount,
+                        currentLocation: currentLocation
+                    );
+                }
+
+                MessageBox.Show($"{exportClass.dataextension} daten wurden erfolgreich gespeichert unter {exportFilePath}");
                 clicked = true;
             }
             catch (Exception ex)

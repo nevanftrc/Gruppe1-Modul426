@@ -141,58 +141,49 @@ namespace EasyWordWPF_US5.Models
         /// <param name="filepath">Der pfad</param>
         /// <param name="Userdefined">Wenn falsch wird es angepasst zu filepath</param>
         /// <param name="filename">den namen</param>
-        public void ExporterMethod(string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish)
+        public void ExporterMethod(string lesson, string word, string word2, int one, int two, string comboboxValue, string filepath, bool Userdefined, string filename, bool isGermanToEnglish, int bucketCount, int currentLocation)
         {
-            // Get the AppData path and create a new subfolder for the application
             string appDataPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EasyWordExports");
-            Directory.CreateDirectory(appDataPath); // Ensure the folder exists
+            Directory.CreateDirectory(appDataPath);
 
-            // Generate the filename
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             string generatedFilename = string.IsNullOrWhiteSpace(filename) ? date : filename;
 
-            // Determine the correct save path
             string savePath = (!string.IsNullOrWhiteSpace(filepath) && filepath != "Kein Pfad Vorhanden")
-                ? filepath // Use the defined filepath if it's valid
+                ? filepath
                 : appDataPath;
 
-            // Determine the full file path with the correct extension
             string fullPath = System.IO.Path.HasExtension(savePath)
-                ? savePath // If filepath already contains a full file path, use it directly
+                ? savePath
                 : System.IO.Path.Combine(savePath, $"{generatedFilename}.{comboboxValue.ToLower()}");
 
-            // Define correct labels based on quiz mode
             string firstLabel = isGermanToEnglish ? "German" : "English";
             string secondLabel = isGermanToEnglish ? "English" : "German";
 
             ReadSettings();
 
-            int bucketCount = main?.ReturnValueLBL() ?? Buckets;
-
             int movement = two - one;
-
             int middleBucket = bucketCount / 2;
-
-            int currentLocation = Math.Max(0, Math.Min(bucketCount - 1, middleBucket - movement));
+            int correctedLocation = Math.Max(0, Math.Min(bucketCount - 1, middleBucket - movement));
 
             if (!isGermanToEnglish)
             {
-                (word, word2) = (word2, word); // Swap words for English-to-German mode
+                (word, word2) = (word2, word);
             }
 
             switch (comboboxValue)
             {
                 case "JSON":
                     {
-                        // Create a new JSON object for the current entry with dynamic labels
                         var newEntry = new Dictionary<string, object>
                 {
+                    { "Lesson", lesson },
                     { firstLabel, word },
                     { secondLabel, word2 },
                     { "CorrectCount", one },
                     { "IncorrectCount", two },
                     { "BucketCount", bucketCount },
-                    { "CurrentLocation", currentLocation }
+                    { "CurrentLocation", correctedLocation }
                 };
 
                         List<object> entries;
@@ -226,14 +217,12 @@ namespace EasyWordWPF_US5.Models
                         bool fileExists = File.Exists(fullPath);
                         using (StreamWriter writer = new StreamWriter(fullPath, true))
                         {
-                            // If the file doesn't exist, write a header first
                             if (!fileExists)
                             {
-                                writer.WriteLine($"Erstes Wort,Zweites Wort,CorrectCount,IncorrectCount,BucketCount,CurrentLocation");
+                                writer.WriteLine($"Lektion,Erstes Wort,Zweites Wort,CorrectCount,IncorrectCount,BucketCount,CurrentLocation");
                             }
 
-                            // Append the new word entry
-                            writer.WriteLine($"{word},{word2},{one},{two},{bucketCount},{currentLocation}");
+                            writer.WriteLine($"{lesson},{word},{word2},{one},{two},{bucketCount},{correctedLocation}");
                         }
                         break;
                     }
