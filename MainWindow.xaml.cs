@@ -491,6 +491,36 @@ namespace EasyWordWPF_US5
             languageWindow.ShowDialog();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenEditWordWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (wordList.Count == 0)
+            {
+                MessageBox.Show("Es gibt keine Wörter zu bearbeiten!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var selectedWord = wordList.FirstOrDefault();
+            if (selectedWord == default)
+            {
+                MessageBox.Show("Bitte wählen Sie ein Wort aus.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            EditWordWindow editWindow = new EditWordWindow(selectedWord.German, selectedWord.English);
+            if (editWindow.ShowDialog() == true)
+            {
+                selectedWord.German = editWindow.GermanWord;
+                selectedWord.English = editWindow.EnglishWord;
+
+                MessageBox.Show("Wort erfolgreich bearbeitet!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
 
 
         private void SwitchModeButton_Click(object sender, RoutedEventArgs e)
