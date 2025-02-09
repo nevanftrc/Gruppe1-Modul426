@@ -789,8 +789,6 @@ namespace EasyWordWPF_US5
             // Aktualisiere die Anzeige der Bucket-Übersicht.
             UpdateBucketOverview();
         }
-
-<<<<<<< HEAD
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var data = new DataStorage.UserData
@@ -802,8 +800,6 @@ namespace EasyWordWPF_US5
 
             DataStorage.Save(data);
         }
-
-=======
         private void OpenLessonSelection_Click(object sender, RoutedEventArgs e)
         {
             LessonSelectionWindow lessonWindow = new LessonSelectionWindow();
@@ -813,7 +809,6 @@ namespace EasyWordWPF_US5
                 LoadWordsFromLessons(selectedLessons);
             }
         }
->>>>>>> f7030bdec28afe40b9c4dd14ea95c5369823e5ad
 
         // Methode, um die Wörter basierend auf den ausgewählten Lektionen zu laden
         public void LoadWordsFromLessons(List<string> lessons)
