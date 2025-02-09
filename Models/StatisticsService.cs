@@ -29,7 +29,7 @@ namespace EasyWordWPF_US5.Models
             {
                 MessageBox.Show("Buckets are not initialized!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
+            Importer = new ExportClass();
             LoadStatistics();
             Newdictonary = new NewDictonary();
         }
@@ -224,17 +224,18 @@ namespace EasyWordWPF_US5.Models
 
                 int movement = stat.IncorrectCount - stat.CorrectCount;
 
-            // Ensure the movement stays within the valid range (0 to max bucket index)
-            int targetBucket = Math.Clamp(sourceBucket - movement, 0, _bucket.buckets.Count - 1);
+                // Ensure the movement stays within the valid range (0 to max bucket index)
+                int targetBucket = Math.Clamp(sourceBucket - movement, 0, _bucket.buckets.Count - 1);
 
-            // Setze für jedes vorhandene Statistik-Objekt die Zähler zurück und
-            // weise den Ziel-Bucket zu.
-  
+                // Setze für jedes vorhandene Statistik-Objekt die Zähler zurück und
+                // weise den Ziel-Bucket zu.
+
                 stat.CorrectCount = 0;
                 stat.IncorrectCount = 0;
                 stat.CurrentLocation = targetBucket;
                 stat.BucketCount = bucketCount;
             }
+            Importer.UpdateBucketCount(bucketCount);
             SaveStatistics();
         }
 

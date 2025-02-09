@@ -793,10 +793,14 @@ namespace EasyWordWPF_US5
         {
             // Setzt alle Wortstatistiken so zurück, dass sie in Bucket 3 landen.
             statisticsService.ResetWordBuckets();
-            MessageBox.Show("Alle Wörter wurden auf Bucket 3 zurückgesetzt.",
+            MessageBox.Show("Alle Wörter wurden auf Bucket 5 zurückgesetzt.",
                             "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
             // Aktualisiere die Anzeige der Bucket-Übersicht.
             UpdateBucketOverview();
+            int count = 5;
+            exportClass.ReadSettings();
+            exportClass.UpdateBucketCount(count);
+            numtxtbo.Content = count.ToString();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

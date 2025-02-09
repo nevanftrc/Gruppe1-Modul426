@@ -79,6 +79,31 @@ namespace EasyWordWPF_US5.Models
             File.WriteAllText(appSettingsFilePath, json);
         }
         /// <summary>
+        /// aktulssiert nur die eimer
+        /// </summary>
+        /// <param name="newBucketCount"></param>
+        public void UpdateBucketCount(int newBucketCount)
+        {
+            // Read the existing settings from the file
+            if (File.Exists(appSettingsFilePath))
+            {
+                var json = File.ReadAllText(appSettingsFilePath);
+                dynamic settings = JsonConvert.DeserializeObject<dynamic>(json);
+
+                // Update only the Buckets property
+                settings.Buckets = newBucketCount;
+
+                // Save the updated settings back to the file
+                string updatedJson = JsonConvert.SerializeObject(settings, Formatting.Indented);
+                File.WriteAllText(appSettingsFilePath, updatedJson);
+            }
+            else
+            {
+                // Handle the case where the settings file doesn't exist
+                Console.WriteLine("Settings file not found.");
+            }
+        }
+        /// <summary>
         /// Der standart von appsettings werte
         /// </summary>
         public void EnsureAppSettings()
