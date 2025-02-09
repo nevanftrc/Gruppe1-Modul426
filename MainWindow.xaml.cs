@@ -50,6 +50,7 @@ namespace EasyWordWPF_US5
             {
                 // Der Benutzer hat eine Datei ausgewählt
                 string selectedFilePath = openFileDialog.FileName;
+                string lessonName = Path.GetFileNameWithoutExtension(selectedFilePath);
 
                 try
                 {
@@ -73,6 +74,7 @@ namespace EasyWordWPF_US5
                     // Aktualisiere die Wortliste
                     wordList = tempList;
                     incorrectWords.Clear();  // Leere die Liste der falschen Antworten
+                    LoadWordsFromFile(selectedFilePath);
                     MessageBox.Show("Die CSV-Datei wurde erfolgreich geladen.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     // Hinweis, dass das Quiz manuell gestartet werden muss
@@ -322,7 +324,8 @@ namespace EasyWordWPF_US5
                 if (isCorrect)
                 {
                     MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
-                    UpdateStatistics(currentWord.German, currentWord.English, true);
+                    string lessonName = "Unknown";
+                    UpdateStatistics(currentWord.German, currentWord.English, true, lessonName);
                     CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
                     myBucket.MoveWord(wordObject, 1, 0);
                     wordList.RemoveAt(currentWordIndex);
@@ -331,7 +334,8 @@ namespace EasyWordWPF_US5
                 {
                     string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                     MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
-                    UpdateStatistics(currentWord.German, currentWord.English, false);
+                    string lessonName = "Unknown";
+                    UpdateStatistics(currentWord.German, currentWord.English, false, lessonName);
                     CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
                     myBucket.MoveWord(wordObject, 0, 1);
                     incorrectWords.Add(currentWord);
@@ -391,7 +395,8 @@ namespace EasyWordWPF_US5
                     if (isCorrect)
                     {
                         MessageBox.Show("Korrekt!", "Richtig", MessageBoxButton.OK, MessageBoxImage.Information);
-                        UpdateStatistics(currentWord.Item1, currentWord.Item2, true);
+                        string lessonName = "Unknown";
+                        UpdateStatistics(currentWord.Item1, currentWord.Item2, true, lessonName);
                         CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
                         myBucket.MoveWord(wordObject, 1, 0);
                         importedWordList.RemoveAt(currentWordIndex);
@@ -400,7 +405,8 @@ namespace EasyWordWPF_US5
                     {
                         string correctAnswer = isGermanToEnglish ? currentWord.Item2 : currentWord.Item1;
                         MessageBox.Show($"Falsch! Die richtige Antwort war: {correctAnswer}", "Falsch", MessageBoxButton.OK, MessageBoxImage.Error);
-                        UpdateStatistics(currentWord.Item1, currentWord.Item2, false);
+                        string lessonName = "Unknown";
+                        UpdateStatistics(currentWord.Item1, currentWord.Item2, false, lessonName);
                         CSVlist wordObject = new CSVlist { de_words = currentWord.Item1, en_words = currentWord.Item2 };
                         myBucket.MoveWord(wordObject, 0, 1);
                         incorrectWords.Add((currentWord.Item1, currentWord.Item2));
@@ -448,7 +454,7 @@ namespace EasyWordWPF_US5
             return !IsGermanWord(word);  // If it's not German, assume it's English
         }
 
-        private void UpdateStatistics(string german, string english, bool correct)
+        private void UpdateStatistics(string german, string english, bool correct, string lessonName)
         {
             var stats = statisticsService.GetOrCreateStatistics(german, english, isGermanToEnglish);
 
@@ -460,6 +466,8 @@ namespace EasyWordWPF_US5
             {
                 stats.IncorrectCount++;
             }
+
+            stats.Lesson = lessonName;
 
             // Save statistics after updating
             statisticsService.SaveStatistics();
@@ -858,13 +866,20 @@ namespace EasyWordWPF_US5
         {
             try
             {
+                string lessonName = Path.GetFileNameWithoutExtension(filePath);
                 var lines = File.ReadAllLines(filePath);
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
                     var parts = line.Split(';');
                     if (parts.Length != 2) continue;
-                    wordList.Add((parts[0].Trim(), parts[1].Trim()));
+                    //wordList.Add((parts[0].Trim(), parts[1].Trim()));
+                    string german = parts[0].Trim();
+                    string english = parts[1].Trim();
+
+                    UpdateStatistics(german, english, false, lessonName);
+
+                    wordList.Add((german, english));
                 }
             }
             catch (Exception ex)

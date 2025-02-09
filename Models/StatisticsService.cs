@@ -10,6 +10,8 @@ namespace EasyWordWPF_US5.Models
 {
     public class StatisticsService
     {
+
+
         private const string FilePath = "statistics.json";
         private Dictionary<string, WordStatistics> statistics;
         public MainWindow main { get; set; }
@@ -246,4 +248,5 @@ namespace EasyWordWPF_US5.Models
         public int IncorrectCount { get; set; } = 0;
         public int CurrentLocation { get; set; } = -1;
         public int BucketCount { get; set; }
-    }
+        public string Lesson { get; set; }
+}
