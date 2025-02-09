@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Windows;
@@ -50,7 +51,7 @@ namespace EasyWordWPF_US5.Models
             File.WriteAllText(FilePath, json);
         }
 
-        public WordStatistics GetOrCreateStatistics(string lesson, string word1, string word2, bool isGermanToEnglish)
+        public WordStatistics GetOrCreateStatistics(string word1, string word2, bool isGermanToEnglish)
         {
             string german = isGermanToEnglish ? word1 : word2;
             string english = isGermanToEnglish ? word2 : word1;
@@ -58,13 +59,8 @@ namespace EasyWordWPF_US5.Models
 
             if (!statistics.TryGetValue(key, out var stats))
             {
-                stats = new WordStatistics { Lesson = lesson, German = german, English = english };
+                stats = new WordStatistics { German = german, English = english };
                 statistics[key] = stats;
-            }
-
-            else
-            {
-                stats.Lesson = lesson;
             }
 
             stats.BucketCount = main?.ReturnValueLBL() ?? 5;
@@ -77,15 +73,6 @@ namespace EasyWordWPF_US5.Models
             stats.CurrentLocation = Math.Max(0, Math.Min(stats.BucketCount - 1, middleBucket - movement));
 
             return stats;
-        }
-
-        public string GetLessonForWord(string key)
-        {
-            if (statistics.TryGetValue(key, out var stats))
-            {
-                return stats.Lesson;  
-            }
-            return null;  
         }
 
         public void ResetStatistics()
@@ -114,15 +101,14 @@ namespace EasyWordWPF_US5.Models
                             string line = reader.ReadLine();
                             string[] parts = line.Split(',');
 
-                            if (parts.Length >= 7) // Ensure valid format
+                            if (parts.Length >= 6) // Ensure valid format
                             {
-                                string lesson = parts[0].Trim();
-                                string word1 = parts[1].Trim();
-                                string word2 = parts[2].Trim();
-                                int correctCount = int.Parse(parts[3]);
-                                int incorrectCount = int.Parse(parts[4]);
-                                int bucketCount = int.Parse(parts[5]);
-                                int currentLocation = int.Parse(parts[6]);
+                                string word1 = parts[0].Trim();
+                                string word2 = parts[1].Trim();
+                                int correctCount = int.Parse(parts[2]);
+                                int incorrectCount = int.Parse(parts[3]);
+                                int bucketCount = int.Parse(parts[4]);
+                                int currentLocation = int.Parse(parts[5]);
 
                                 // Detect language and assign correctly
                                 bool isWord1German = IsGermanWord(word1);
@@ -134,7 +120,6 @@ namespace EasyWordWPF_US5.Models
                                 {
                                     importedData[key] = new WordStatistics
                                     {
-                                        Lesson = lesson,  
                                         German = german,
                                         English = english,
                                         CorrectCount = correctCount,
@@ -165,7 +150,6 @@ namespace EasyWordWPF_US5.Models
                         {
                             importedData[key] = new WordStatistics
                             {
-                                Lesson = entry.Lesson ?? "Unbekannt",
                                 German = german,
                                 English = english,
                                 CorrectCount = entry.CorrectCount,
@@ -232,12 +216,18 @@ namespace EasyWordWPF_US5.Models
             int bucketCount = main?.ReturnValueLBL() ?? 5;
             // Wenn mindestens 3 Buckets vorhanden sind, entspricht Bucket 3 dem Index 2,
             // ansonsten wird als Ziel der mittlere Bucket gewählt.
-            int targetBucket = (bucketCount >= 3) ? 2 : bucketCount / 2;
+            foreach (var stat in statistics.Values)
+            {
+                int sourceBucket = _bucket.bucket_count;
+
+                int movement = stat.IncorrectCount - stat.CorrectCount;
+
+            // Ensure the movement stays within the valid range (0 to max bucket index)
+            int targetBucket = Math.Clamp(sourceBucket - movement, 0, _bucket.buckets.Count - 1);
 
             // Setze für jedes vorhandene Statistik-Objekt die Zähler zurück und
             // weise den Ziel-Bucket zu.
-            foreach (var stat in statistics.Values)
-            {
+  
                 stat.CorrectCount = 0;
                 stat.IncorrectCount = 0;
                 stat.CurrentLocation = targetBucket;
@@ -250,7 +240,6 @@ namespace EasyWordWPF_US5.Models
 }
     public class WordStatistics
     {
-        public string Lesson { get; set; }
         public string German { get; set; }
         public string English { get; set; }
         public int CorrectCount { get; set; } = 0;
@@ -258,4 +247,3 @@ namespace EasyWordWPF_US5.Models
         public int CurrentLocation { get; set; } = -1;
         public int BucketCount { get; set; }
     }
-
