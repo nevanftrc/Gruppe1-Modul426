@@ -129,6 +129,7 @@ namespace EasyWordWPF_US5
 
             BucketList.ItemsSource = BucketOverview; // Datenbindung für UI
             UpdateBucketOverview(); // Initiale Anzeige der Bucket-Werte
+            CopyWords();
 
         }
 
@@ -898,7 +899,31 @@ namespace EasyWordWPF_US5
             }
         }
 
+        public void CopyWords() 
+        {
+            string words = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../words");
+            string sourceDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, words);
+            // Ensure the destination directory exists
+            string destDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "words");
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
 
+            // Get all the files in the source directory and copy them to the destination directory
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                string destFile = Path.Combine(destDir, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite: true);  // overwrite true to replace existing files
+            }
+
+            // Recursively copy all subdirectories
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string destSubDir = Path.Combine(destDir, Path.GetFileName(subDir));
+                //CopyDirectory(subDir, destSubDir);  // Recursively copy subdirectories
+            }
+        }
     }
 }
 //Test
