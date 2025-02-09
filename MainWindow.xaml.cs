@@ -450,7 +450,10 @@ namespace EasyWordWPF_US5
 
         private void UpdateStatistics(string german, string english, bool correct)
         {
-            var stats = statisticsService.GetOrCreateStatistics(german, english, isGermanToEnglish);
+            string key = $"{german}:{english}";
+            string lesson = statisticsService.GetLessonForWord(key) ?? "Unbekannt";  
+
+            var stats = statisticsService.GetOrCreateStatistics(lesson, german, english, isGermanToEnglish);
 
             if (correct)
             {
