@@ -786,6 +786,35 @@ namespace EasyWordWPF_US5
             ImportWindow ImporterWindow = new ImportWindow(myBucket); 
             ImporterWindow.Show();
         }
+        public List<(string German, string English)> GetWordList()
+        {
+            return wordList;
+        }
+
+        // Mit dieser Methode kann ein Wortpaar (basierend auf Deutsch und Englisch) aus der Kartei entfernt werden
+        public void DeleteWord(string german, string english)
+        {
+            var item = wordList.FirstOrDefault(w => w.German == german && w.English == english);
+            if (!string.IsNullOrEmpty(item.German))
+            {
+                wordList.Remove(item);
+                MessageBox.Show($"Das Wortpaar '{german} - {english}' wurde gelöscht.",
+                    "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Wortpaar nicht gefunden.",
+                    "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Event-Handler zum Öffnen des DeleteWordWindow
+        private void OpenDeleteWordWindow_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteWordWindow deleteWindow = new DeleteWordWindow(this);
+            deleteWindow.ShowDialog();
+        }
+
     }
 }
 //Test

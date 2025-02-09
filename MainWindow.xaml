@@ -55,6 +55,8 @@
                     Click="Close"/>
             <Button Content="Alles zurücksetzen" Width="200" Margin="10"
             Click="ResetAllWordsButton_Click" />
+            <Button Content="Wort löschen" Width="200" Margin="10"
+            Click="OpenDeleteWordWindow_Click"/>
 
 
             <!-- Bereich für Software-Informationen -->
