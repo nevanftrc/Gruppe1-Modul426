@@ -16,6 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using static EasyWordWPF_US5.Models.DataStorage;
 
 
+
 namespace EasyWordWPF_US5
 {
     public partial class MainWindow : Window
@@ -34,8 +35,6 @@ namespace EasyWordWPF_US5
                 ? input.Trim().Equals(correctAnswer)  // Beachtet die Groß-/Kleinschreibung
                 : input.Trim().Equals(correctAnswer, StringComparison.OrdinalIgnoreCase);  // Ignoriert die Groß-/Kleinschreibung
         }
-
-
         private void OpenFileDialog_Click(object sender, RoutedEventArgs e)
         {
             // Erstelle ein OpenFileDialog-Objekt
@@ -107,6 +106,7 @@ namespace EasyWordWPF_US5
         private List<(string, string)> incorrectWords = new List<(string, string)>();
         private Random random = new Random();
         private int currentWordIndex = -1;
+        private string currentWord = string.Empty;
         private bool isGermanToEnglish = true; // Default mode is D->E
 
         private List<string> currentCsvData = new List<string>();
@@ -472,6 +472,8 @@ namespace EasyWordWPF_US5
             // Save statistics after updating
             statisticsService.SaveStatistics();
         }
+
+
         private void ResetStatisticsButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Möchten Sie wirklich alle Statistiken zurücksetzen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
