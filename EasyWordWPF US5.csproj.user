@@ -30,6 +30,9 @@
     <Page Update="SettingsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\LanguageSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="wordlearn.xaml">
       <SubType>Designer</SubType>
     </Page>

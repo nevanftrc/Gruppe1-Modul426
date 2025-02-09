@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using EasyWordWPF;
 using EasyWordWPF_US5.Models;
+using EasyWordWPF_US5.Views;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -482,6 +483,15 @@ namespace EasyWordWPF_US5
                 MessageBox.Show("Statistiken wurden zurückgesetzt.", "Info", MessageBoxButton.OK);
             }
         }
+
+
+        private void OpenLanguageSelection_Click(object sender, RoutedEventArgs e)
+        {
+            LanguageSelectionWindow languageWindow = new LanguageSelectionWindow();
+            languageWindow.ShowDialog();
+        }
+
+
 
         private void SwitchModeButton_Click(object sender, RoutedEventArgs e)
         {
