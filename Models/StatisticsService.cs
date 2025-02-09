@@ -209,6 +209,26 @@ namespace EasyWordWPF_US5.Models
             }
             ImportData(filePath);
         }
+        public void ResetWordBuckets()
+        {
+            // Ermittle die Anzahl der Buckets, Standard ist 5
+            int bucketCount = main?.ReturnValueLBL() ?? 5;
+            // Wenn mindestens 3 Buckets vorhanden sind, entspricht Bucket 3 dem Index 2,
+            // ansonsten wird als Ziel der mittlere Bucket gewählt.
+            int targetBucket = (bucketCount >= 3) ? 2 : bucketCount / 2;
+
+            // Setze für jedes vorhandene Statistik-Objekt die Zähler zurück und
+            // weise den Ziel-Bucket zu.
+            foreach (var stat in statistics.Values)
+            {
+                stat.CorrectCount = 0;
+                stat.IncorrectCount = 0;
+                stat.CurrentLocation = targetBucket;
+                stat.BucketCount = bucketCount;
+            }
+            SaveStatistics();
+        }
+
     }
 }
     public class WordStatistics

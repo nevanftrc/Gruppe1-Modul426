@@ -814,6 +814,16 @@ namespace EasyWordWPF_US5
             DeleteWordWindow deleteWindow = new DeleteWordWindow(this);
             deleteWindow.ShowDialog();
         }
+        private void ResetBuckets_Click(object sender, RoutedEventArgs e)
+        {
+            // Setzt alle Wortstatistiken so zurück, dass sie in Bucket 3 landen.
+            statisticsService.ResetWordBuckets();
+            MessageBox.Show("Alle Wörter wurden auf Bucket 3 zurückgesetzt.",
+                            "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Aktualisiere die Anzeige der Bucket-Übersicht.
+            UpdateBucketOverview();
+        }
+
 
     }
 }
